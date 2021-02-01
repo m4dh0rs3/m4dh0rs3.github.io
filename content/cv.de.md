@@ -25,9 +25,9 @@ date = 2021-02-01
 
 ## Fähigkeiten
 
-- Autodidakt – privat-akademische Interessen: Mathematik, Philosophie
-- Musiker – Klavier (nebensächlich Schlagzeug, Trompete)
-- Entwickler – [Rust](https://rust-lang.org), [Sim](https://github.com/m4dh0rs3/PBD), [CAS](https://github.com/m4dh0rs3/cas) ([GitHub](https://github.com/m4dh0rs3))
+- [X] Autodidakt – privat-akademische Interessen: Mathematik, Philosophie
+- [X] Musiker – Klavier (nebensächlich Schlagzeug, Trompete)
+- [X] Entwickler – [Rust](https://rust-lang.org), [Sim](https://github.com/m4dh0rs3/PBD), [CAS](https://github.com/m4dh0rs3/cas) ([GitHub](https://github.com/m4dh0rs3))
 
 ### Sprachen
 

@@ -25,9 +25,9 @@ date = 2021-02-01
 
 ## Skills
 
-- Autodidact – private academic interest: mathematics, philosophy
-- Musician – Piano (also plays the drums, trumpet)
-- Developer – [Rust](https://rust-lang.org), [Sim](https://github.com/m4dh0rs3/PBD), [CAS](https://github.com/m4dh0rs3/cas) ([GitHub](https://github.com/m4dh0rs3))
+- [X] Autodidact – private academic interest: mathematics, philosophy
+- [X] Musician – Piano (also plays the drums, trumpet)
+- [X] Developer – [Rust](https://rust-lang.org), [Sim](https://github.com/m4dh0rs3/PBD), [CAS](https://github.com/m4dh0rs3/cas) ([GitHub](https://github.com/m4dh0rs3))
 
 ### Languages
 
