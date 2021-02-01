@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <meta content="#ffffff" name="theme-color" />
+  <meta content="#da532c" name="msapplication-TileColor" />
+
+  
+  
+  
+  
+  
+
+  <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.6.1/themes/folio/galleria.folio.min.css"
+    rel="stylesheet" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+  <link href='http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;site.css' rel="stylesheet" />
+
+  
+  
+
+  <title>
+    
+    Benedikt Schöps
+    
+  </title>
+
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/201b8d5e05.js"></script>
+
+  
+</head>
+
+<body class="has-background-white">
+  
+  <nav aria-label="section navigation" class="navbar is-light" role="navigation">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item has-text-weight-bold" href="http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;">Benedikt Schöps</a>
+        <a aria-expanded="false" aria-label="menu" class="navbar-burger burger" data-target="navMenu" role="button">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-end has-text-centered">
+          
+          <a class="navbar-item" href='http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;&#x2F;'>
+            Home
+          </a>
+          
+          <a class="navbar-item" href='http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;&#x2F;cv&#x2F;'>
+            CV
+          </a>
+          
+          <a class="navbar-item" href='http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;&#x2F;posts&#x2F;'>
+            Posts
+          </a>
+          
+          <a class="navbar-item" id="nav-search" title="Search" data-target="#search-modal">
+            <span class="icon">
+              <i class="fas fa-search"></i>
+            </span>
+          </a>
+          <a class="navbar-item" id="dark-mode" title="Switch to dark theme">
+            <span class="icon">
+              <i class="fas fa-adjust"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+
+  
+<header class='hero'>
+  <div class='hero-body pb-0'>
+    <div class='container'>
+      <div class="content">
+        <h1 class='title has-text-centered is-1'>Benedikt Schöps</h1>
+        <p class='subtitle has-text-centered'>Benedikt is an ambitious learner, focusing on computer science, mathematics and philosophy.</p>
+        
+        
+  <p class="is-size-4 has-text-centered">
+    
+    
+      <a class="link" href="https://twitter.com/m4dh0rs3" target="_blank">
+        <span class="icon is-medium">
+          <i class="fab fa-twitter"></i>
+        </span>
+      </a>
+    
+    
+    
+      <a class="link" href="https://github.com/m4dh0rs3" target="_blank">
+        <span class="icon is-medium">
+          <i class="fab fa-github"></i>
+        </span>
+      </a>
+    
+    
+    
+    
+    
+    <a class="link" href="mailto:schoeps.benedikt@gmail.com" target="_blank">
+      <span class="icon is-medium">
+        <i class="far fa-envelope"></i>
+      </span>
+    </a>
+    
+    
+  </p>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+<section class='section'>
+    <div class='container'>
+      <div class="content">
+        <p>Currently, he lives in <em>Germany, Zwickau</em>, attending the secondary level of the <em>Clara-Wieck-Gymnasium</em>. There he submitted one of his projects, <a href="https://github.com/m4dh0rs3/PBD">Positionsbedingte Dynamiken</a> as a special project, wich was graded very good marks. His most recent project was a <a href="https://github.com/m4dh0rs3/cas">computer–algebra–system</a>, written in <a href="https://rust-lang.com">Rust</a>.</p>
+<blockquote>
+<p>See his <a href="/cv/">CV</a> for more</p>
+</blockquote>
+
+      </div>
+    </div>
+</section>
+
+
+  
+  <section class="modal" id="search-modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="field">
+        <p class="control has-icons-right">
+          <input class="input" id="search" placeholder="Search this website." type="search" />
+          <span class="icon is-small is-right">
+            <i class="fas fa-search"></i>
+          </span>
+        </p>
+      </div>
+      <div class="search-results">
+        <div class="search-results__items"></div>
+      </div>
+    </div>
+    <button aria-label="close" class="modal-close is-large"></button>
+  </section>
+  
+
+
+  
+  
+  
+
+  
+  
+
+  
+  <footer class="py-4 has-background-light">
+    <p class="has-text-centered">
+      Built with
+      <span class="icon is-small">
+        <i class="fas fa-code fa-xs"></i>
+      </span>
+      code and
+      <span class="icon is-small">
+        <i class="fas fa-heart fa-xs"></i>
+      </span>
+      love <br /> Powered By
+      <span class="icon is-small">
+        <i class="fas fa-power-off fa-xs"></i>
+      </span>
+      Zola
+    </p>
+  </footer>
+  
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.6.1/galleria.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.xkcd@1/dist/chart.xkcd.min.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.6.1/themes/folio/galleria.folio.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js"></script>
+  <script src='http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;search_index.en.js'></script>
+  <script src='http:&#x2F;&#x2F;127.0.0.1:1111&#x2F;js&#x2F;site.js'></script>
+
+  
+  
+<script src="/livereload.js?port=1025&amp;mindelay=10"></script></body>
+
+</html>
