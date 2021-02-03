@@ -28,9 +28,9 @@ languages:
         - name: Beiträge
           url: posts
           weight: 10
-        - name: Showerthoughts
-          url: posts/showerthoughts
-          weight: 20
+        # - name: Showerthoughts
+        #   url: posts/showerthoughts
+        #   weight: 20
     
     homeInfoParams:
       title: Benedikt Schöps
@@ -97,8 +97,3 @@ params:
       url: "https://discord.com/users/2777"
     - name: Email
       url: "mailto:schoeps.benedikt@gmail.com"
-
-assets:
-  favicon: "static/favicon/favicon.ico"
-  favicon16x16:  "static/favicon/favicon-16x16.png"
-  favicon32x32:  "static/favicon/favicon-32x32.png"
