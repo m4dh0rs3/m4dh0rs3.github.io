@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="de" dir="de">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Positionsbedingte Dynamiken | Benedikt Schöps</title>
+
+<meta name="keywords" content="" />
+<meta name="description" content="canvas { background: white; width: 100%; height: 100%; }    load(&#34;assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm&#34;);   Betreuer: Lucas Völkel Lektoren: Jonathan Schöps, Daniel Schöps in Zwickau am Clara-Wieck-Gymnasium   „Constraints are as fundemental in game physics, as shaders are in computer graphics“ - Erin Catto
+ Inhalt  Einleitung  Hinführung zur physikalischen Simulation am Computer   Mathematische Grundlagen  Vektoren Integrale Projektion Die Ortsfunktion Kollisionserkennung – Punkt in AABB   Physikalische Grundlagen  Newtonsche Gesetze Massepunkte Bewegung des Massepunktes   Zwangsbedingungen  Einführung in Zwangsbedingungen und deren Wirkung Erzwungener Abstand Projektion in den erzwungen Abstand   Implementation  Programmaufbau und Ablauf Implementation in Lua   Auswertung Quellen  1.">
+<meta name="author" content="Benedikt Schöps">
+<link rel="canonical" href="http://m4dh0rs3.github.io/de/posts/pbd/" />
+<link href="/assets/css/stylesheet.min.0aa4476f5c10d5ed61a8f85e5c7405a24c7338102d5b339e3431eebfd9830d99.css" integrity="sha256-CqRHb1wQ1e1hqPheXHQFokxzOBAtWzOeNDHuv9mDDZk=" rel="preload stylesheet"
+    as="style">
+
+<link rel="icon" href="http://m4dh0rs3.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://m4dh0rs3.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://m4dh0rs3.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://m4dh0rs3.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="http://m4dh0rs3.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.69.0" />
+<link rel="alternate" hreflang="de" href="http://m4dh0rs3.github.io/de/posts/pbd/" />
+
+
+<meta property="og:title" content="Positionsbedingte Dynamiken" />
+<meta property="og:description" content="canvas { background: white; width: 100%; height: 100%; }    load(&#34;assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm&#34;);   Betreuer: Lucas Völkel Lektoren: Jonathan Schöps, Daniel Schöps in Zwickau am Clara-Wieck-Gymnasium   „Constraints are as fundemental in game physics, as shaders are in computer graphics“ - Erin Catto
+ Inhalt  Einleitung  Hinführung zur physikalischen Simulation am Computer   Mathematische Grundlagen  Vektoren Integrale Projektion Die Ortsfunktion Kollisionserkennung – Punkt in AABB   Physikalische Grundlagen  Newtonsche Gesetze Massepunkte Bewegung des Massepunktes   Zwangsbedingungen  Einführung in Zwangsbedingungen und deren Wirkung Erzwungener Abstand Projektion in den erzwungen Abstand   Implementation  Programmaufbau und Ablauf Implementation in Lua   Auswertung Quellen  1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://m4dh0rs3.github.io/de/posts/pbd/" />
+<meta property="og:image" content="http://m4dh0rs3.github.io/assets/images/cover.png" /><meta property="article:published_time" content="2020-02-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-02-28T00:00:00+00:00" /><meta property="og:site_name" content="Benedikt Schöps" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="http://m4dh0rs3.github.io/assets/images/cover.png" />
+<meta name="twitter:title" content="Positionsbedingte Dynamiken"/>
+<meta name="twitter:description" content="canvas { background: white; width: 100%; height: 100%; }    load(&#34;assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm&#34;);   Betreuer: Lucas Völkel Lektoren: Jonathan Schöps, Daniel Schöps in Zwickau am Clara-Wieck-Gymnasium   „Constraints are as fundemental in game physics, as shaders are in computer graphics“ - Erin Catto
+ Inhalt  Einleitung  Hinführung zur physikalischen Simulation am Computer   Mathematische Grundlagen  Vektoren Integrale Projektion Die Ortsfunktion Kollisionserkennung – Punkt in AABB   Physikalische Grundlagen  Newtonsche Gesetze Massepunkte Bewegung des Massepunktes   Zwangsbedingungen  Einführung in Zwangsbedingungen und deren Wirkung Erzwungener Abstand Projektion in den erzwungen Abstand   Implementation  Programmaufbau und Ablauf Implementation in Lua   Auswertung Quellen  1."/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Positionsbedingte Dynamiken",
+  "name": "Positionsbedingte Dynamiken",
+  "description": "canvas { background: white; width: 100%; height: 100%; }    load(\u0026#34;assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm\u0026#34;);   Betreuer: Lucas Völkel Lektoren: Jonathan …",
+  "keywords": [
+    
+  ],
+  "articleBody": "  canvas { background: white; width: 100%; height: 100%; }    load(\"assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm\");   Betreuer: Lucas Völkel Lektoren: Jonathan Schöps, Daniel Schöps in Zwickau am Clara-Wieck-Gymnasium   „Constraints are as fundemental in game physics, as shaders are in computer graphics“ - Erin Catto\n Inhalt  Einleitung  Hinführung zur physikalischen Simulation am Computer   Mathematische Grundlagen  Vektoren Integrale Projektion Die Ortsfunktion Kollisionserkennung – Punkt in AABB   Physikalische Grundlagen  Newtonsche Gesetze Massepunkte Bewegung des Massepunktes   Zwangsbedingungen  Einführung in Zwangsbedingungen und deren Wirkung Erzwungener Abstand Projektion in den erzwungen Abstand   Implementation  Programmaufbau und Ablauf Implementation in Lua   Auswertung Quellen  1. Einleitung 1.1 Hinführung zur physikalischen Simulation am Computer Ein Computer ist eine Datenverarbeitungsmaschine. Anhand einer Anleitung, Programmcode genannt, schreibt er Daten auf ein Speichermedium, löscht, ändert, verschiebt sie. Das macht er weitaus schneller als ein Mensch, welchem abstrakte Dinge und Verwaltung schwer fallen. Daher kommt der Name, Computer waren Hilfskräfte von Mathematikern, die für sie mühsame und langweilige Rechnungen ausführten, also das, was heute unser Taschenrechner macht, der auch ein Computer ist. Als im letzten Jahrhundertdie ersten speicherbasierten, elektronischen Computer aufkamen, fanden sie Anwendung in großen Räumen, verschlüsselten Nachrichten und führten lange Berechnungen aus. Damit nahmen sie Mathematiker den mühsamen Teil ab und sie konnten sich auf das Theoretische konzentrieren. Zuerst war diese numerische Verarbeitung der wesentliche Anwendungsbereich des Computers.1\nDie ansteigende Komplexität, die durch integrierte Schaltkreise, also kleine Platinen auf denen Leiterbahnen eingeätzt sind, und immer kleineren Transistoren, den wichtigsten elektronischen Bauteilen eines Computers, wurde deutlich unterschätzt. Laut „Moore’s Law“, was zugleich das Motto der riesigen Computerindustrie ist, verdoppelt sich die Anzahl der Komponenten regelmäßig, etwa aller 2 Jahre, heute liegt sie im Milliarden Bereich von Transistoren pro CPU, der Zentralen Prozessoreinheit des Computers. So ist der Computer immer schneller geworden und konnte sich verschiedensten Aufgaben widmen. Er hat den Mensch in fast jeder, für den Menschen einfachen, aber langwierigen Aufgabe wegrationalisiert und gab Ausschlag für Industrie 3- und 4.0. Er ist als kleiner Mikrochip in fast jedem technischen Gerät eingebaut, macht mobil, immer erreichbar, informiert, verbindet, unterhält und ist Forschungswerkzeug. Computer haben einen erheblichen Einfluss auf unser Leben, vom autonomen Fahren über Geldverwaltung bis hin zu Klimamodellen, die auf Supercomputerlaufen, oder trivial, die Videospielekonsole. Schon lange versucht man mit Hilfe der Vergangenheit die Zukunft vorauszusagen. In ihr lassen sich Muster erkennen. Diese können wir fortführen und mit Hilfe des jetzigen Zustandes Aussagen über die Zukunfttreffen. Das nennt man Extrapolation. So etwas tun Historiker, Politiker, aber auch Physiker, dazu benutzen sie die genaue Sprache der Mathematik. Mit ihr lassen sich abstrakte Aussagen aufstellen. Die Lösung dieser ist aber nicht einfach, für ein genaues Ergebnis braucht es keine Intuition, sondern das sture Befolgen von Regeln.\nDa kommt der Computer ins Spiel, denn er ist bestens dafür geschaffen. Virtuelle Experimente, Simulationen und Videospiele, versuchen die Realität nachzuahmen. Computerprogramme beschreiben ein Modell, welches Gleichungen und Eingangswerte zum Verlauf der Simulation enthält und geben spätere Zustände aus. Solche sind aufgrund der eingeschränkten Rechenleistung idealisiert, das heißt unwesentliche Einflüsse werden komplett ausgelassen. Glücklicherweise lassen sich mit höherem Zeitaufwand, mehr Speicher oder schnelleren Computern genauere Zustände beschreiben und weniger Konkrete in geringerem Zeitaufwand oder mit schwächeren Rechnern. Zeitlich weiter entfernte Ergebnisse sind ungenauer und auf die nächste Zukunft lässt sich sagen: es wirdsich nichts ändern. Diese Idee des Laplaceschen Determinismus, das alles sich voraussagen liese, hätte man nur den genausten Zustand des Jetzt, wird angewendet, auch wenn dieser insofern nicht mehr gilt, das es seit der Quantenmechanik mehrere wahr scheinliche Ergebnisse gibt2. Das ist aber zu ignorieren, sobald es um makroskopische Simulationen geht, nicht um atomare Größen. Trotzdem sind die Modelle, also Nachahmungen der Realität, hoch komplex und es erfordert bestes mathematisches Verständnis. Der Umfang dieser Arbeit ist zu gering, um Quaternionen und Tensoren, mit denen Rotationsdynamikbeschrieben wird, zu erklären. So stellt sich die Frage, ob mit Hilfe des Computers sich einfache Modelle aufstellen liesen, welche mehr Rechenzeit benötigen, die uns aber der Computer abnimmt.\n2. Mathematische Grundlagen 2.1 Vektoren1 3 In der Mathematik und Physik sind Vektoren grundlegende Elemente von Gleichungen, die Objekte im Raum und deren Bewegung betreffen. Sie fassen mehrere Dimensionen, also mehrere Werte in einem Objekt zusammen, einer Variablen. Ein Vektor kann auch richtungsweisend Wachstum angeben oder beispielsweise Wahrscheinlichkeiten einer Superposition in der Quantenmechanik2, er hat also vielzählige Anwendung.\nEin Vektor besitzt:\n Richtung $\\alpha$ Länge $r$  Er enthält diese aber nicht direkt, sondern Koordinaten. Im Gegensatz zu einem Punkt, gibt der Vektor keine Position an, denn er zeigt vom Koordinatenursprung auf eine Position, die seine Komponenten, also die einzelnen Zahlen im Vektor, beschreiben. Somit gibt der Vektor eine Verschiebung („Verschiebungsvektor“) an. Allerdings dient er trotzdem oft der Einfachheit halber als Punktersatz und gibt Positionen („Ortsverktor“) direkt an.\nVariablen, die Vektoren tragen werden oft, wie auch in dieser Arbeit, ein Pfeil ($\\vec v$) aufgesetzt. Einzelne Komponenten sind geordnet von oben nach unten aufeinander oder nebeneinander in einer runden Klammer geschrieben. Ein Element im Vektor $\\vec v$ and der Stelle $i$ wir als “$\\vec v_i$” angegeben. Dabei beschränkt sich $i$ nicht nur auf positive ganze Zahlen $\\N$, sondern es werden auch wörtliche Bezeichnungen und Buchstaben benutzt wie: $x$ $w$. Je ein Element “$\\vec v_i$” ist Teil der Menge namens $\\mathbb I$. Geometrisch ist jeder Menge eine Achse zugeordnet, entlang dieser gibt der zugehöriger Wert Verschiebung an. Vektoren werden so anhand der Werte ihrer Komponenten und des Types unterschieden. Die Zahl $n$ an Komponenten wird als Vektor $n$.-Dimension bezeichnet. Die Menge aller Vektoren des gleichen Typen, die sich aber anhand ihrer Werte unterscheiden, wird als Vektorraum bezeichnet.\nFür Addition, Multiplikation und deren Inversion zwischen zwei Vektoren gilt:\n$$\\vec a + \\vec b = (a_1 + b_1, a_2 + b_2, \\dots, a_{i-1} + b_{i-1}, a_i + b_i)$$\n$$\\vec a * \\vec b = (a_1 * b_1, a_2 * b_2, \\dots, a_{i-1} * b_{i-1}, a_i * b_i)$$\nEs wird komponentenweise addiert, subtrahiert, multipliziert und dividiert. M3 zeigt wie die Addition veranschaulicht werden kann. Man setzt den lokalen Koordinatenursprung des zweiten Pfeils an den Ersten.\nFür die Multiplikation zwischen einem Vektor und einer reellen Zahl („Skalierung“) $\\vec v; n$ gilt:\n$$n * \\vec v = (n * v_1, n * v_2, \\dots, n * v_{i-1}, v * v_i)$$\nEs wird wieder komponentenweise multipliziert oder dividiert.\nEs gibt viele weitere Operationen und Eigenschaften, erwähnenswert sind noch:\n Vektorlänge aus Satz des Pythagoras: $|\\vec v| = \\sqrt{v_1^2 + v_2^2 + \\dots + v_{i-1}^2 + v_i^2}$ Vektornormalisierung setzt die Vektorlänge auf den Einheitskreis, damit $|\\vec v| = 1$: $\\frac{\\vec v}{|\\vec v|} = (\\frac{v_1}{|\\vec v|}, \\frac{v_2}{|\\vec v|}, \\dots, \\frac{v_{i-1}}{|\\vec v|}, \\frac{v_i}{|\\vec v|})$  In der Informatik wird ein Vektor viel mehr als Liste geordneter Zahlen verstanden,frei von einer direkten Zuordnung als Position oder Beschleunigung fasst er Eigenschafteneines Objektes oder mehrere Werte einer Eigenschaft zusammen. Ein Vektor in Lua:\nv = { x = -3, y = 7} w = { x = 9, y = -1 } k = { x = v.x + w.x, y = v.y + w.y}  Definition: Ein Vektor $\\vec v = (v_1, v_2, \\dots, v_{i-1}, v_i)$ ist ein mathematisches Objekt, welches eine Verschiebung im Raum beschreibt. Die Anzahl $n$ der Komponenten wird als Vektor $n$-ter Dimension bezeichnet. Dargestellt wird er in einer Variable mit aufgesetztem Pfeil, die eine Tupel (also eine endliche Liste) geordneter, reeller Zahlen enthält. Geometrisch veranschaulicht wird der Vektor mit Hilfe eines Pfeiles, welcher vom Koordinatenursprung zum Punkt des Vektors zeigt. Die Evaluierung von Operatoren zwischen Vektoren wird komponentenweise abhängig vom zugeordneten Index oder Bezeichnung ausgeführt, soweit diese vorhanden ist.\n 2.2 Integrale1 3 Integrale sind, neben Vektoren, das entscheidende Element zur Lösung von Bewegungsgleichungen, aber auch in vielen anderen Bereichen zu finden. Isaac Newton, ein englischer Forscher und Gottfried Wilhelm Leibniz, ein deutsches Universalgenie, formulierten beide Ende des 17. Jahrhunderts unabhängig voneinander den Fundamentalsatz der Analysis, der die Berechnung des Integrals und dessen Umkehrung, die Ableitung, beweist. Der Integral gibt die Fläche unter einer Funktion an. Um diese exakt zu berechnen gibt es keine immer konkrete Vorgehensweise. Nur bei einfachen Fällen sind exakte Lösungen vorhanden, beispielsweise die der gleichförmigen Bewegung, in welcher die Funktion im zu berechnenden Integral immer den gleichen Wert ergibt. Sonst lässt sich der Integral oft nur approximieren, also annähern und wird somit zur Grenzwertfunktion, der eigentliche Wert wird nicht gefunden.\nUm den (bestimmten) Integral zu berechnen, unterteilt man die Fläche in Streifen, wie M4 zeigt. Je kleiner diese Rechtecke, umso genauer kann die Fläche berechnet werden. Die Höhe eines Streifens bestimmt der Funktionswert zur Position des Streifens $f(x)$, hier wurde immer die linke Ecke benutzt. Das nennt man Eulersche Integration. Mann kann aber auch die Mitte $f(x + \\frac{dx}{2})$ oder das Ende eines Streifens $f(x + dx)$ als Schnittpunkt mit der Funktion wählen.Verschiedene Methoden sollten anhand der geforderten Genauigkeit und Komplexitätgewählt werden. Die Breite des Rechteckes ist die Schrittgröße $dx$ des Integrals. Die Flächen aller Rechtecke werden aufsummiert und bilden die Gesamtfläche.\nBerechnung des Integrals in Lua:\nfunction integral(fn, a, b, dt) local A = 0 for x = a, b, dt do local y = fn(x) A = A + y * dt end end  Definition: Der Integral $\\int_{a}^{b}{f(x) * dx}$ ordnet einer Funktion ihre grundlegende Fläche zu. Er wird aus der Summe aller Rechtecke ($f(x) * dx$) der Höhe von jeweils dem Funktionswert aus jeder reellen Zahl in $[a, b]$ und Breite der Veränderung $dx$ zweier aufeinander folgenden Argumente gebildet. Da unendliche viele reelle Zahlen zwischen $a$ und $b$ liegen, muss der Integral approximiert werden, indem die Menge der Zahlen auf endlich reduziert wird. Das heißt $x \\in {\\N * dx \\mid a \\leq x \\leq b}$ anstatt $x \\in [a, b]$. Mit $dx \\to 0$ und $n = \\frac{b - a}{dx}$ gilt: $\\int_a^b{f(x)*dx} = \\lim_{n \\to \\inf}{\\sum_{k=0}^n{f(a + dx * k) * dx}}$. Somit ist der Integral eine Grenzwertfunktion.\n 2.3 Projektion1 Projektion ist das neu Zuordnen eines Wertes in einem Vektorraum $\\mathbb V = \\R^n$ auf einen anderen Raum $\\mathbb T = \\R^k$. Dabei gilt $\\mathbb T \\neq \\mathbb V$. Es gibt viele verschiedene Methoden zur Projektion, wichtig ist aber, dass aus Sicht von $\\mathbb T$ sich nichtsändert. Oft wird dafür ein zu projizierender Wert entlang einer Achse verschoben und skaliert. Unter diesem komplizierten mathematischen Begriff finden sich eine Breite von Anwendungen. Bei einem Beamer (~„Projektor“) wird Licht von der 1-Dimensionalen Lichtquelle durch das gerichtete Fortbewegen auf eine 2-Dimensionale Wand projiziert. In der Computergrafik werden 3-Dimensionale Punkte auf den 2-Dimensionalen Bildschirm mit Hilfe einer perspektivischen Projektionsmatrix projiziert. M5 zeigt eine Projektion aus dem 2-Dimensionalen Raum parallel zu $k$ auf $m$.\nEin einfaches mathematisches Beispiel ist 1-Dimensionale Projektion in zwei verschiedene Wertebereiche. Gegeben ist der Wert $x$ im Intervall $M = [a, b] = {\\R \\mid a \\leq x \\leq b}$ und ein zweiter Intervall $N = [c, d]$. Es soll $x$ in $N$ projiziert werden. Da $M$ und $N$ linear glatt sind, kann man das prozentuale Verhältnis $p$ von $x$ in $M$ mit Hilfe der Intervalllänge errechnen und daraus den projizierten Wert $y$ in $N$. Also $p = \\frac{x}{b - a}$ multipliziert mal die Intervalllänge von $N$ plus den Startwert $c$. Somit ist $y$ aus $x$ in $M$ zu $N$: $y = x\\div (b-a) * (d - c) + c$. Hier wird also $x$ entlang der 1-dimensionalen X-Achse um $c$ verschoben und mit dem Verhältnis beider Vektorlängenskaliert. Diese Gleichung ist in der Informatik besonders wichtig um beispielsweise einem Sinuswert ${-1 \\leq x \\leq 1}$ in einer RGB-Farbe in Rotanteil ${0 \\leq x \\leq 255}$ umzuwandeln.\nProjektion in den zweiten 1-dimensionalen Wertebereich in Lua:\nfunction remap(x, a, b, c, d) return x / (b - a) * (d - c) + c end 2.4 Die Ortsfunktion4 5 Die Ortsfunktion $\\vec x(t)$ gibt eine Position $\\vec x_t$ über die Zeit $t$ an. Diese Position ist dieSumme aller vorherigen Geschwindigkeiten. Bleibt die Geschwindigkeit konstant mit gleichförmige Bewegung, so lässt sich die Position $\\vec x_t$ zu Zeit $t$ mit $\\vec x(t) = t * \\vec x_0$ berechnen. Die Geschwindigkeit ist $x_0$ , weil sie eigentlich die Positionsveränderung über einen Zeitschritt angibt. Anders schreiben lässt sich das als $\\underbrace{\\vec x(t) = \\vec x_0 * 1 + \\dots + \\vec x_0 * 1}_{t}$.\nWenn sich aber die Geschwindigkeit über die Zeit auch ändert, beispielsweise durch die Funktion $\\vec v(t)$ beschrieben, dann müsste man jede einzelne Geschwindigkeit in Relationzum Zeitschritt aufaddieren. Daraus ergäbe sich dieses fraktale, also aus sich selbst bestehendes Muster:\n$$ \\vec x(t) = \\underbrace{ \\underbrace{ \\vec v(\\frac{0}{1} * \\delta t) * \\frac{\\delta t}{1}}{ \\underbrace{ \\vec v(\\frac{0}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } + \\underbrace{ \\vec v(\\frac{1}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } } + \\underbrace{ \\vec v(\\frac{1}{1} * \\delta t) * \\frac{\\delta t}{1}}{ \\underbrace{ \\vec v(\\frac{2}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } + \\underbrace{ \\vec v(\\frac{3}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } } + \\dots + \\underbrace{ \\vec v(\\frac{t-1}{1} * \\delta t) * \\frac{\\delta t}{1}}{ \\underbrace{ \\vec v(\\frac{2t-1}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } + \\underbrace{ \\vec v(\\frac{2t-2}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } } + \\underbrace{ \\vec v(\\frac{t}{1} * \\delta t) * \\frac{\\delta t}{1}}{ \\underbrace{ \\vec v(\\frac{2t-1}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } + \\underbrace{ \\vec v(\\frac{2t}{2} * \\delta t) * \\frac{\\delta t}{2}}{ \\dots } } }_{t} $$\nDiese Gleichung faltet sich weiter auf bis zu einem infinitesimalen Zeitschritt. Also die nächst größer reelle Zahl über Null. Die Lösung der Ortsfunktion wird in 3.3 Bewegung des Massepunktes beschrieben.\n2.5 Kollisionserkennung – Punkt in AABB6 Eine „Axis Aligned Bounding Box“ (AABB) ist ein Rechteck,beziehungsweise ein Quader, welcher parallel zu den Achsen eines Koordinatensystems liegt. Die Kollisionserkennung beschäftigt sich damit, ob ein Körpereinen Zweiten penetriert. Um mathematisch zu erkennen ob sich ein Punkt in einer AABB befindet, muss man an die Ausdehnung des Körpers auf eine Dimension herunterbrechen. Das bedeutet man muss auf allen Achsen des Koordinatensystems überprüfen, ob diejeweilige Koordinate des Punktes innerhalb der Ausdehnung des Quaders in dieser Achse liegt oder nicht. Liegt sie in allen, so befindet sich der Punkt innerhalb der AABB. Mit einer AABB von Position $(k, l, \\dots)$ und einer Breite und Höhe $w$ $h$ $\\dotsb$ st jede Position derinnerhalb $[(k, k + w), (l, l + h), \\dots]$ auch in der AABB. M6 zeigt inwiefern eine Position Teilder Menge ist.\nAABB-Check in Lua:\nif (k  x and x  k + w) and (l  y and y  l + h) then -- (x, y) ist in AABB end 3. Physikalische Grundlagen 3.1 Newtonsche Gesetze Isaac Newton formulierte 1687 in seinem Hauptwerk „Philosophiae Naturalis Principia Mathematica“ die heute bekannten drei Newtonschen Gesetze. Sie legen die Grundlagen der Klassischen Mechanik. Mit diesen kann man die Bewegung von Körpern makroskopisch sehr gut beschreiben.\n I Trägheitsgesetz: “Ein Körper verharrt im Zustand der Ruhe oder der gleichförmig geradlinigen Bewegung, sofern er nicht durch einwirkende Kräfte zur Änderung seines Zustands gezwungen wird.\"7\n Das Trägheitsgesetz meint, dass der Geschwindigkeitsvektor $\\vec v$ konstant ist, solange keine Kraft auf ihn wirkt. In der Realität ist dies nicht einfach zu beobachten, weil besonders Reibung, wenn auch nur an der Luft, schon Kraft genug aufbringt den Körper langsam zu entschleunigen.\n II Aktionsprinzip: “Die Änderung der Bewegung ist der Einwirkung der bewegenden Kraft proportionalund geschieht nach der Richtung derjenigen geraden Linie, nach welcher jene Kraft wirkt.\"7\n Das Aktionsprinzip bedeutet, dass je stärker die einwirkende Kraft, umso schneller die Bewegungsänderung. Auch ist die Kraft gerichtet und die Bewegungsänderung entspricht dieser Richtung. Ein Zusatz ist, dass die Bewegungsänderung abhängig von der Masse ist, je größer die Masse, umso geringer die Bewegungsänderung.\n III Actio und Reactio: “Kräfte treten immer paarweise auf. Übt ein Körper A auf einen anderen Körper B eine Kraft aus (actio), so wirkt eine gleich große, aber entgegen gerichtete Kraft von Körper B auf Körper A (reactio).\"7\n Das Dritte Newtonsche Gesetz Actio und Reactio erklärt, bei dem Versuch einenKörper in Bewegung zu setzen, widersteht dieser abhängig von seiner Masse mit einerentgegengesetzten Kraft. Da diese Kräfte paarweise und entgegengesetzt auftreten hat daszur Folge, dass die Summe aller Kräfte in einem geschlossenen System gleich Null ist.\n3.2 Massepunkte Ein Massepunkt ist eine Abstraktion eines Körpers. Er hat keine Ausdehnung und besteht aus:\n Position $\\vec x$, für bewegten Massepunkt auch eine Geschwindigkeit $\\vec v$ Masse $m$ Inverse masse $w = m^{-1}$ (da sie oft gebraucht wird, ist sie hier aufgelistet)  Das er keine Ausdehnung hat bedeutet, dass er sich in verschiedenen Rotationswinkeln um seine Achse nicht unterscheiden lässt und er kann auch physikalisch mit seiner Rotationnicht die Bewegung anderer Körper beeinflussen. Somit hat er in seiner Bewegung nur Translationsfreiheitsgrade, also Verschiebung parallel zu den Achsen des Koordinatensystems. Der Massepunkt wird häufig in physikalischen Berechnungen genutzt weil die Rotation eines Körpers gerade wegen des Ignorierens von Luftwiederstand in idealisierten Modellen zum Beispiel im Flug keinen Unterschied macht. In den man in jedem Simulationsschritt die Geschwindigkeit des Massepunktes mit einem Luftwiderstandskoeffizienten $r \\in [0, 1] = {\\R \\mid 0 \\leq r \\leq 1}$ multipliziert, kann man dennoch, wenn der Massepunkt Bestandteil eines komplexeren Körpers ist, Reibung an der Luft simulieren. Man kann auch Elastizität simulieren, indem man während eines Kollisionskontaktes die Geschwindigkeit dämpft. Das geschieht wie beim Luftwiederstand mit einem Elastizitätskoeffizienten $e \\in [0, 1] = {\\R \\mid 0 \\leq e \\leq 1}$.\n3.3 Bewegung des Massepunktes4 Die Bewegung des Massepunktes beschreiben die Newtonschen Gesetze. Damit sich der Massepunkt bewegt, braucht es eine einwirkende Kraft oder eine ursprüngliche Geschwindigkeit. An dieser bewegt er sich linear entlang, wenn keine weitere Kraft einwirkt. Meistens aber wirkt die Gravitation auf den Massepunkt und andere externe Kräfte $\\vec f$ wie eine Kollisionsreaktion. Wenn von zwei Seiten Kräfte wirken, dann gleichen sie sich aus,dass heißt der Körper bewegt sich deshalb dann nicht. Die Geschwindigkeit zu einem bestimmten Zeitpunkt ist die Geschwindigkeit vom Zeitpunkt davor plus die Beschleunigung, welche relativ zur Masse steht, multipliziert mal den Zeitschritt. Also $\\vec v = \\int_0^t{\\vec f_t * w * dt}$. Hier wird der Integral sichtbar, denn die Geschwindigkeit $\\vec v$ ist auch eine ununterbrochene Funktion nach Zeit, die nicht immer nur konstant ist.\nSo ist die Position $\\vec x$ die Summe aller vorherigen Geschwindigkeiten mal $\\epsilon$ (die Infinitesimale), beziehungsweiße $dt$. Somit gilt $\\vec x(t) = \\int_0^t{\\vec v(t) * dt}$, $\\vec x(t) = \\int_0^t{(\\int_0^t{\\vec f * w * dt}) * dt}$. Für eine fortlaufende Simulation mit gegebenen einwirkenden Kräfte $\\vec f$, sowie eventueller Startposition- und Geschwindigkeit $\\vec x_0$ $\\vec v_0$ und Schrittgröße $\\delta t$ muss in jedem Zeitschritt allerdings nur folgendes berechnet werden (Eulersche Methode):\n$$ \\begin{aligned} t \u0026= t + \\delta t \\\n\\vec v \u0026= \\vec v + \\vec f * \\delta t \\\n\\vec x \u0026= \\vec x + \\vec v * \\delta t \\end{aligned} $$\nEs gibt auch andere Möglichkeiten die fortlaufende Bewegung zu berechnen indem man zum Beispiel anders integriert. Eine zweite Methode wäre die Verlet Integration. Diese wird auch in der Implementation der Simulation genutzt, weil dann die Projektion der Zwangsbedingungen einfach einzubauen ist, da Positionen direkt manipuliert werden und nicht Geschwindigkeiten. Zunächst ist auch gleiches wie oben zu wissen. Dann wird fortlaufend folgendes berechnet:\n$$ \\begin{aligned} t \u0026= t * \\delta t \\\n\\vec v \u0026= \\vec v + \\vec f * \\delta t \\\n\\vec p \u0026= \\vec x + \\vec v * \\delta t \\\n\\vec v \u0026= (\\vec p - \\vec x) \\div \\delta t \\\n\\vec x \u0026= \\vec p \\end{aligned} $$\nt = t + dt vx = vx + fx * dt vy = vy + fy * dt px = x + vx * dt py = y + vy * dt vx = (px - x) / dt vy = (py - y) / dt x = px y = py Der Vorteil dieser Methode ist, dass wenn $\\vec p$ durch die Projektion der Zwangsbedingungen manipuliert wird, verändert sich auch $\\vec v$ daher kommt der Name „Positions bedingte Dynamiken“.\n4. Zwangsbedingungen 4.1 Einführung in Zwangsbedingungen und deren Wirkung Zwangsbedingungen („Constraints“) sind der der entscheidende Teil, welcher aus der unabhängigen Bewegung der Massepunkten, starre, weiche und komplexe Körper schafft. Dies geschieht, indem sie Massepunkte verbindet, und in ihrer Bewegung zu- und voneinander indirekt einschränkt. Eine Bedingung $C(\\vec x): \\R^n \\to \\R$8 ist eine Funktion, die den Zustand eines Systems $\\vec x$ annimmt und einen einzelnen Wert $y$ ausgibt, der beschreibt, inwiefern dieses System der Bedingung zuwiderläuft. Es gibt zwei verschiedene Arten in denen eine Bedingung erfüllt sein kann8. Erfüllt wenn ihr Wert:\n Gleichheit (“equality”): gleich Null ist ($C(\\vec x) = 0$). Ungleichheit (“inequality”): größer oder gleich Null ist ($C(\\vec x) \\geq 0$).  Wie stark diese umgesetzt werden sollen beschreibt ein Festigkeitskoeffizient8 $k \\in [0, 1]$, welcher mit dem Funktionswert multipliziert wird. Umso kleiner der Festigkeitskoeffizient, desto näher ist die Funktion daran, erfüllt zu werden. So gibt es starre und weiche Bedingungen.\nAußerdem unterscheidet man Zwangsbedingungen noch in der Art des Systems und was sie einschränken8:\n Abstand zweier Punkte soll erfüllt sein (“Distance C.\") Winkel zwischen zwei Punkten soll erfüllt sein (“Bending C.\") Volumen eines Körpers, beschrieben durch Eckpunkte soll erfüllte sein (“Volume C.\") Kollision, in erster Körper darf einen Zweiten nicht schneiden (“Collision C.\")  Für unsere Simulation sind nur Zwangsbedingungen auf den Abstand wichtig, mit ihnen kann man auch teilweise die anderen Bedingungen umsetzen.\nM7 zeigt wie die Position des Massepunktes durch die Länge des Fadenpendels eingeschränkt ist. Solches Verhalten lässt sich auch mit Zwangsbedingungen modellieren.\n4.2 Erzwungener Abstand Funktionen, die den Abstand zwischen zwei Massepunkten einschränken, sind wie Stöcke. Die Position und Rotation des Stockes lassen sich von den Positionen seiner beiden Enden beschreiben. Allerdings wird ein Stock nicht länger oder kürzer werden, somit können sich beide Enden nicht frei im Raum bewegen, sondern der Abstand muss immer der Gleiche sein. Solch eine Funktion besteht aus8:\n einer Länge $d$ die Position zweier Massepunkte $\\vec a$ $\\vec b$ einem Festigkeitskoeffizienten $k$  Aus diesen Werten wird die Funktion $C$ gebildet. Diese soll Null sein, wenn der Abstand zwischen $a$ und $b$ gleich $d$ ist und immer größer werden, desto mehr sie sich entfernen. Der Abstand zwischen $\\vec a$ und $vec b$ lässt sich mit dem Satz des Pythagoras berechnen. Die Hypotenuse ist die Länge $\\sqrt{(a_x - b_x)^2 + (a_y - b_y)^2}$ also $|\\vec a - \\vec b|$ (Kurzschreibweise).\nSo kann man die Constraint als $C(\\vec a, \\vec b) = (|\\vec a - \\vec b| - d) * k$8 schreiben.\n4.3 Projektion in den erzwungenen Abstand Nun gilt es diese Funktion auf die Position der beiden Massepunkte zu projizieren.Die Position der Punkte soll so verändert werden, dass die Bedingung erfüllt ist. DieRichtung, also der Vektor $\\vec r$ der von Punkt $\\vec a$ zu $\\vec b$ zeigt, lässt sich aus der Differenzzwischen den beiden Punkten berechnen: $\\vec a - \\vec b$. Dieser Vektor muss nun normalisiertwerden damit die Länge 1 ist. Dazu wird $\\vec r$ von der Vektorlänge dividiert. Zusammengesetzt sie das so aus: $\\frac{\\vec a - \\vec b}{|\\vec a - \\vec b|}$. Das bildet den Strahl, entlang welchem die Punkte verschoben werden müssen, um sie in den geltenden Funktionsbereich zu projizieren. Die Stärke der Verschiebung, sprich die ehemalige Vektorlänge, ist der Wert der Funktion der Zwangsbedingung. Der erste Massepunkt muss entgegengesetzt zum Zweiten verschoben werden. Somit entsteht die Verschiebung von $\\vec a$ und negativ die gleiche für $\\vec b$:\n$$\\delta \\vec a = k * (|\\vec a - \\vec b| - d) * \\frac{\\vec a - \\vec b}{|\\vec a - \\vec b|}$$\nDa beide Punkte Massepunkte sind, also auch eine Masse haben, soll diese in die Gleichung so einfliesen, dass die beidseitige Verschiebung im Masseverhältnis gewichtet ist. Dazu muss der Anteil des Massepunkte an der Gesamtmasse berechnet werden. Das geschieht für $a$ mit $\\frac{w_a}{w_a + w_b}$ beziehungsweise $\\frac{w_b}{w_a + w_b}$ für $b$. Somit lässt sich eine Distance Constraint folgendermaßen projizieren8:\n$$ \\begin{aligned} \\delta \\vec a \u0026= \\frac{w_a}{w_a + w_b} * k * (|\\vec a - \\vec b| - d) * \\frac{\\vec a - \\vec b}{|\\vec a - \\vec b|} \\\n\\delta \\vec b \u0026= - \\frac{w_b}{w_a + w_b} * k * (|\\vec a - \\vec b| - d) * \\frac{\\vec a - \\vec b}{|\\vec a - \\vec b|} \\end{aligned} $$\nDie Projektion der Punkte in Lua. Wiederholende Werte wie die Vektordifferenz oder die Länge werden extra zwischengespeichert:\ndx = i.px - j.px dy = i.py - j.py l = (dx^2 + dy^2)^.5 ox = (l - d) * (dx / l) oy = (l - d) * (dy / l) i.px = i.px + ((i.w / (i.w + j.w) * ox) * k) i.px = i.px + ((i.w / (i.w + j.w) * oy) * k) i.px = i.px - ((j.w / (i.w + j.w) * ox) * k) i.px = i.px - ((j.w / (i.w + j.w) * oy) * k) 5. Implementation 5.1 Programmaufbau und Ablauf Die Simulation läuft fortwährend nach Start des Programms. Zu Beginn sind Eingangsvariablen zu wählen (ein „Statevector“). Das zu simulierende System ist eine Menge von Massepunkten und Funktionen der Zwangsbedingungen. Das visuelle Abbild eines Zeitschrittes wird am Ende dessen aktualisiert.\nDer Ablauf des Programms sieht folgendermaßen aus8:\n Lege Zeitschritt $\\delta t$ fest, Luftwiderstandskoeffizient $r$ und wirkende Kräfte $\\vec f$ wie Gravitation\n  Initialisiere Massepunkte mit Position $\\vec x$, Geschwindigkeit $\\vec v$ und inverser Masse $w = m^{-1}$\n  Initialisiere Funktionen der erzwungenen Abstände mit Länge $d$, Festigkeit $k$ und Stellen $i$ $j$ der Massepunkte\n  Für jeden Massepunkt bei $d$:\n aktualisiere Geschwindigkeit: $\\vec v_i = \\vec v_i + \\delta f * w_i * \\delta t$ (dämpfe Geschwindigkeiten: $\\vec v_i = \\vec v_i * r$) setze nächste Position: $\\vec p_i = \\vec x_i + \\vec v_i * \\delta t$    Für jede Constraint $C$ mit Stelle $i$ $j$:\n projiziere Constraint:    $$ \\begin{aligned} \\vec a \u0026= \\vec a + \\frac{w_a}{w_a + w_b} * k * (|\\vec a - \\vec b| - d) * \\frac{\\vec a - \\vec b}{|\\vec a - \\vec b|} \\\n\\vec b \u0026= \\vec b - \\frac{w_b}{w_a + w_b} * k * (|\\vec a - \\vec b| - d) * \\frac{\\vec a - \\vec b}{|\\vec a - \\vec b|} \\end{aligned} $$\n Für jeden Massepunkt bei $i$:\n akquiriere Geschwindigkeit: $\\vec v = (\\vec p - \\vec x) \\div \\delta t$ setze endgültige Position: $\\vec x = \\vec p$    Wiederhole ab 3.\n  5.2 Implementation in Lua Lua ist eine Skriptsprache mit einem ursprünglich stark wissenschaftlichen Bezug. Sie wurde 1993 an der Universität PUC-Rio entwickelt. Lua ist sehr einfach zu lesen, denn sie gleicht stark dem Englischen und benutzt weniger Sonderzeichen. Deshalb wird sie in dieser Arbeit auch in den Beispielen benutzt. Man ordnet Lua folgende Eigenschaften zu9:\n interpretiert: Code wird direkt vor dem Ausführen kompiliert, auch CLI möglich leichtgewichtig: 297kB, läuft daher auch auf Mikrocontrollern schwach, dynamisch: Typen werden interpretiert, können geändert werden eingebettet: ergänzt in vielen Anwendungen C/C++, einfach implementiert funktional: globale Daten werden in Funktionen geändert, weitergegeben  Mit Metatables ist auch objektorientierte Programmierung möglich, da diese aber umständlich implementiert ist, wird nicht mit Methoden, sonder mit typspezifischen Funktionen gearbeitet. Das bedeutet der Argumenttyp ist im Namen der Funktion zu erkennen. Diese Funktion nimmt ein Objekt an, verändert es und gibt es wieder aus oder speichert es direkt, da Funktionen in Lua globalen Zugriff haben. Objekte des gleichen Typs werden nach Erschaffung in einer Liste gespeichert und in jedem Zeitschritt aktualisiert. Da jeweils über die Listen iteriert wird, sind Schritte in 5. über 3.0, aber in 3. gesetzt, um effektiver zu sein. Außerdem, damit sich keine Massepunkte außerhalb des Fensters bewegen, prallen sie daran ab. Das geschieht jeweils mit einem 1-Dimensionalen AABBKollisionstest. Wenn dieser positiv ist, wird die Geschwindigkeit auf dieser Achse umgekehrt, sowie die Position in einen validen Bereich gesetzt.\nZur Visualisierung und interaktiven Gestaltung wurde LÖVE-2D benutzt, ein Opensource Spiele Framework. Diese Implementation ist 2D, alles funktioniert abergenauso in 3D, da an keiner Stelle mit Rotation gerechnet werden muss.\nDer komplette Quellcode, sowie die Programme für Linux und Windows befinden sich auf:\ngithub.com/m4dh0rs3/PBD/\n6. Auswertung Das Ziel der Facharbeit war eine einfache Methode vorzustellen, die es dennoch ermöglicht starre und weiche Körper zu simulieren. Im Hinblick auf das fertiggestellte Programm ist dies definitiv möglich. Rein visuell fallen wenig Fehler auf, nur wenn die Geschwindigkeiten oder die Komplexität sehr hoch ist, führt das meist zu einer akkumulierenden Überreaktion. Mit genügend Auswichtung der Simulationswerte wie Gravitation, Zeitschritt, Luftreibung und den Massen kann auf jeden Fall ein beachtbares Ergebnis erzeugt werden. Zusätzlich bietet die PBD eine hohe Varietät in der Art des zu simulierenden Modells im Vergleich zu anderen Methoden. Wenn noch die Kollisionsbedingungen für dynamische Körper implementiert sind, kann man die Simulation für die meisten Zwecke als vollständig betrachten. Der nächste Schritt wäre eine 3-Dimensionale Implementation und eventuell in einer Low-Level Programmiersprache um die Leistung zu erhöhen. Außerdem könnte man mit Vertex-Shader, Programme, die auf der GPU laufen, massiv parallel arbeiten. Zur Zeit kann das Programm in Lua mit LÖVE-2D Massepunkte im Eintausender-Bereich simulieren. Mit einer Dichte-Bedingung ist auch das Simulieren von Wasser möglich ist, für ein visuell ansprechendes Ergebnis sind aber vielmehr Massenpunkte von Nöten. Auch für sehr einfache System wie ein Doppelpendel, welches in allen anderen Methoden schwieriger zu simulieren ist, kann die PBD-Methode helfen. So ist mit erhöhter Genauigkeit die Simulation auch für wissenschaftliche Zwecke geeignet. Das schlussendliche Programm hat auch einen Wert für den Unterricht, da anhand dessen zum Beispiel die Newtonschen Gesetze interaktiv erklärt werden können. Man könnte noch eine Integration mit dynamischen Zeitschritt einzubauen, um das Verhältnisvon Genauigkeit zu Zeitaufwand weiter zu optimieren. Verschiedenste Funktionen für Zwangsbedingungen können noch implementiert werden, auch wenn deren Projektion kompliziert ist. Eine visuelle Darstellung, ob eine Position die Zwangsbedingung erfüllt oder nicht, könnte hilfreich sein.\nIch hoffe diese Arbeit gibt einen Anfang in weiteren Versuchen die Realität nachzuahmen.Die Idee Modelle am Computer zu simulieren um sonst nicht umsetzbare Probleme zu behandeln und zu analysieren ist in diesem Jahrhundert besonders wichtig, da Experimente, die neue Einblicke liefern sollen, meist viel zu aufwendig sind.\nAuch wenn dieses Projekt mich sehr viel Zeit gekostet hat, gab es mir einen umfangreichen Einblick in komplexere Mathematik und besonders die numerische Physik. Lange habe ich solche Methoden benutzt ohne zu wissen, was mathematisch dahinter steckt. Diese Arbeit hat ein größeres Interesse geweckt, die Mathematik in vielen neuen Themen anzuwenden. Schlussendlich hat die Simulation auch einen großen Unterhaltungswert und macht neugierig, wie das Ein oder Andere wohl funktioniert und was dahinter steckt.\n7. Quellen 7.1 Bilder M  42 Jahre CPU Entwicklung, Daten von u. A. K. Rupp, einzusehen auf github.com/karlrupp/microprocessor-trend-data/commits/master Vektor, B. Schöps Vektoraddition, B. Schöps Integral, B. Schöps Projektion an k zu m von J. Niesen, überarbeitet von B. Schöps, einzusehen auf commons.wikimedia.org/wiki/File:Oblique_projection.svg AABB Mengenbild, B. Schöps Pendel, B. Schöps Constraint Projection, aus E1 gleichnamiges Kapitel 3.3, überarbeitet von B. Schöps Lua Logo einzusehen auf lua.org  7.2 Referenzen B und Entnommen E   „Essential Mathematics for Games and Interactive Applications“ von J. Van Verth, L. Bishop: Kapitel 2: Vectors and Points, 6: Interpolation, 7: Viewing and Projection, 12.3.2: AABB, 13: Rigid-Body Dynamics ↩︎\n Vortrag „Analogrechnen“ von Bernd Ulmann auf dem CCC ↩︎\n „3D Math Primer for Graphics and Game Development“ von F. Dunn, I. Parberry: Kapitel 2: Vectors, 11, 12: Mechanics, 11.7: The Integral ↩︎\n „The Nature Of Code“ von Daniel Shiffman: Kapitel 1: Vectors, 2: Forces, 4: Particle Systems ↩︎\n Brilliant Kurse „Classical Mechanics“, „Differential Equations 1“ (brilliant.org) ↩︎\n „Game Physics Coockbook“ von G. Szauer ↩︎\n „Mathematische Prinzipien der Naturlehre“ von Isaac Newton (Dt. J. PH. Wolfers) (zusammengefasst auf de.wikipedia.org/wiki/Newtonsche_Gesetze) ↩︎\n Paper „Position Based Dynamics“ von u. A. Matthias Müller: Kapitel 3: Position Based Simulation ↩︎\n Website „About Lua“ auf lua.org/about ↩︎\n   ",
+  "wordCount" : "5177",
+  "inLanguage": "de",
+  "image":"http://m4dh0rs3.github.io/assets/images/cover.png","datePublished": "2020-02-28T00:00:00Z",
+  "dateModified": "2020-02-28T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Benedikt Schöps"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://m4dh0rs3.github.io/de/posts/pbd/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Benedikt Schöps",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://m4dh0rs3.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+
+
+
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+<noscript>
+    <style type="text/css">
+        .theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://m4dh0rs3.github.io/de/" accesskey="h" title="Über (Alt + H)">Über</a>
+            <span class="logo-switches">
+                <a id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </a>
+                
+                
+
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://m4dh0rs3.github.io/" title="En"
+                            aria-label="En">En</a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu" onscroll="menu_on_scroll()">
+            <li>
+                <a href="http://m4dh0rs3.github.io/de/posts" title="Beiträge">
+                    <span>Beiträge</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://m4dh0rs3.github.io/de/posts/showerthoughts" title="Showerthoughts">
+                    <span>Showerthoughts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://m4dh0rs3.github.io/de/posts/cv" title="Lebenslauf">
+                    <span>Lebenslauf</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://m4dh0rs3.github.io/de/archives" title="Archiv">
+                    <span>Archiv</span>
+                </a>
+            </li></ul>
+    </nav>
+</header>
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs">
+
+      <a href="http://m4dh0rs3.github.io/de/">Home</a>
+    </div>
+    <h1 class="post-title">
+      Positionsbedingte Dynamiken
+    </h1>
+    <div class="post-meta">
+
+February 28, 2020&nbsp;·&nbsp;25 min&nbsp;·&nbsp;Benedikt Schöps
+
+    </div>
+  </header> 
+<figure class="entry-cover">
+        <img srcset="http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover_hu517bf8a4584c4e83afcd404afdde8017_278592_360x0_resize_box_2.png 360w ,http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover_hu517bf8a4584c4e83afcd404afdde8017_278592_480x0_resize_box_2.png 480w ,http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover_hu517bf8a4584c4e83afcd404afdde8017_278592_720x0_resize_box_2.png 720w ,http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover_hu517bf8a4584c4e83afcd404afdde8017_278592_1080x0_resize_box_2.png 1080w ,http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover_hu517bf8a4584c4e83afcd404afdde8017_278592_1500x0_resize_box_2.png 1500w ,http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover.png 3083w"
+            sizes="(min-width: 768px) 720px, 100vw" src="http://m4dh0rs3.github.io/de/posts/pbd/assets/images/cover.png" alt="" />
+        
+</figure>
+
+  <div class="post-content">
+<div>
+   <style>
+      canvas {
+         background: white;
+         width: 100%;
+         height: 100%;
+      }
+    </style>
+   <canvas id="glcanvas" tabindex='1'></canvas>
+   <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
+   <script>load("assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm");</script>
+</div>
+<ul>
+<li><strong>Betreuer</strong>: Lucas Völkel</li>
+<li><strong>Lektoren</strong>: Jonathan Schöps, Daniel Schöps</li>
+<li>in Zwickau am <em><strong>Clara-Wieck-Gymnasium</strong></em></li>
+</ul>
+<blockquote>
+<p><em>„Constraints are as fundemental in game physics, as shaders are in computer graphics“</em> - <strong>Erin Catto</strong></p>
+</blockquote>
+<h1 id="inhalt">Inhalt<a hidden class="anchor" aria-hidden="true" href="#inhalt">#</a></h1>
+<ol>
+<li><a href="#1-einleitung">Einleitung</a>
+<ol>
+<li><a href="#11-hinf%C3%BChrung-zur-physikalischen-simulation-am-computer">Hinführung zur physikalischen Simulation am Computer</a></li>
+</ol>
+</li>
+<li><a href="#2-mathematische-grundlagen">Mathematische Grundlagen</a>
+<ol>
+<li><a href="#21-vektoren1-2">Vektoren</a></li>
+<li><a href="#22-integrale1-2">Integrale</a></li>
+<li><a href="#23-projektion1">Projektion</a></li>
+<li><a href="#24-die-ortsfunktion3-7">Die Ortsfunktion</a></li>
+<li><a href="#25-kollisionserkennung--punkt-in-aabb5">Kollisionserkennung – Punkt in AABB</a></li>
+</ol>
+</li>
+<li><a href="#3-physikalische-grundlagen">Physikalische Grundlagen</a>
+<ol>
+<li><a href="#31-newtonsche-gesetze">Newtonsche Gesetze</a></li>
+<li><a href="#32-massepunkte">Massepunkte</a></li>
+<li><a href="#33-bewegung-des-massepunktes3">Bewegung des Massepunktes</a></li>
+</ol>
+</li>
+<li><a href="#4-zwangsbedingungen">Zwangsbedingungen</a>
+<ol>
+<li><a href="#41-einf%C3%BChrung-in-zwangsbedingungen-und-deren-wirkung">Einführung in Zwangsbedingungen und deren Wirkung</a></li>
+<li><a href="#42-erzwungener-abstand">Erzwungener Abstand</a></li>
+<li><a href="#43-projektion-in-den-erzwungenen-abstand">Projektion in den erzwungen Abstand</a></li>
+</ol>
+</li>
+<li><a href="#5-implementation">Implementation</a>
+<ol>
+<li><a href="#51-programmaufbau-und-ablauf">Programmaufbau und Ablauf</a></li>
+<li><a href="#52-implementation-in-lua">Implementation in Lua</a></li>
+</ol>
+</li>
+<li><a href="#6-auswertung">Auswertung</a></li>
+<li><a href="#7-quellen">Quellen</a></li>
+</ol>
+<h2 id="1-einleitung">1. Einleitung<a hidden class="anchor" aria-hidden="true" href="#1-einleitung">#</a></h2>
+<h3 id="11-hinführung-zur-physikalischen-simulation-am-computer">1.1 Hinführung zur physikalischen Simulation am Computer<a hidden class="anchor" aria-hidden="true" href="#11-hinführung-zur-physikalischen-simulation-am-computer">#</a></h3>
+<p>Ein Computer ist eine Datenverarbeitungsmaschine. Anhand einer Anleitung, Programmcode genannt, schreibt er Daten auf ein Speichermedium, löscht, ändert, verschiebt sie. Das macht er weitaus schneller als ein Mensch, welchem abstrakte Dinge und Verwaltung schwer fallen. Daher kommt der Name, Computer waren Hilfskräfte von Mathematikern, die für sie mühsame und langweilige Rechnungen ausführten, also das, was heute unser Taschenrechner macht, der auch ein Computer ist. Als im letzten Jahrhundertdie ersten speicherbasierten, elektronischen Computer aufkamen, fanden sie Anwendung in großen Räumen, verschlüsselten Nachrichten und führten lange Berechnungen aus. Damit nahmen sie Mathematiker den mühsamen Teil ab und sie konnten sich auf das Theoretische konzentrieren. Zuerst war diese numerische Verarbeitung der wesentliche Anwendungsbereich des Computers.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<img src="assets/images/processor-trend.png" alt="M1" style="width: 50%; float: right;"/>
+<p>Die ansteigende Komplexität, die durch integrierte Schaltkreise, also kleine Platinen auf denen Leiterbahnen eingeätzt sind, und immer kleineren Transistoren, den wichtigsten elektronischen Bauteilen eines Computers, wurde deutlich unterschätzt. Laut <em>„Moore’s Law“</em>, was zugleich das Motto der riesigen Computerindustrie ist, verdoppelt sich die Anzahl der Komponenten regelmäßig, etwa aller 2 Jahre, heute liegt sie im Milliarden Bereich von Transistoren pro CPU, der Zentralen Prozessoreinheit des Computers. So ist der Computer immer schneller geworden und konnte sich verschiedensten Aufgaben widmen. Er hat den Mensch in fast jeder, für den Menschen einfachen, aber langwierigen Aufgabe wegrationalisiert und gab Ausschlag für Industrie 3- und 4.0. Er ist als kleiner Mikrochip in fast jedem technischen Gerät eingebaut, macht mobil, immer erreichbar, informiert, verbindet, unterhält und ist Forschungswerkzeug. Computer haben einen erheblichen Einfluss auf unser Leben, vom autonomen Fahren über Geldverwaltung bis hin zu Klimamodellen, die auf Supercomputerlaufen, oder trivial, die Videospielekonsole. Schon lange versucht man mit Hilfe der Vergangenheit die Zukunft vorauszusagen. In ihr lassen sich Muster erkennen. Diese können wir fortführen und mit Hilfe des jetzigen Zustandes Aussagen über die Zukunfttreffen. Das nennt man Extrapolation. So etwas tun Historiker, Politiker, aber auch Physiker, dazu benutzen sie die genaue Sprache der Mathematik. Mit ihr lassen sich abstrakte Aussagen aufstellen. Die Lösung dieser ist aber nicht einfach, für ein genaues Ergebnis braucht es keine Intuition, sondern das sture Befolgen von Regeln.</p>
+<p>Da kommt der Computer ins Spiel, denn er ist bestens dafür geschaffen. Virtuelle Experimente, Simulationen und Videospiele, versuchen die Realität nachzuahmen. Computerprogramme beschreiben ein Modell, welches Gleichungen und Eingangswerte zum Verlauf der Simulation enthält und geben spätere Zustände aus. Solche sind aufgrund der eingeschränkten Rechenleistung idealisiert, das heißt unwesentliche Einflüsse werden komplett ausgelassen. Glücklicherweise lassen sich mit höherem Zeitaufwand, mehr Speicher oder schnelleren Computern genauere Zustände beschreiben und weniger Konkrete in geringerem Zeitaufwand oder mit schwächeren Rechnern. Zeitlich weiter entfernte Ergebnisse sind ungenauer und auf die nächste Zukunft lässt sich sagen: es wirdsich nichts ändern. Diese Idee des Laplaceschen Determinismus, das alles sich voraussagen liese, hätte man nur den genausten Zustand des Jetzt, wird angewendet, auch wenn dieser insofern nicht mehr gilt, das es seit der Quantenmechanik mehrere wahr scheinliche Ergebnisse gibt<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. Das ist aber zu ignorieren, sobald es um makroskopische Simulationen geht, nicht um atomare Größen. Trotzdem sind die Modelle, also Nachahmungen der Realität, hoch komplex und es erfordert bestes mathematisches Verständnis. Der Umfang dieser Arbeit ist zu gering, um Quaternionen und Tensoren, mit denen Rotationsdynamikbeschrieben wird, zu erklären. So stellt sich die Frage, ob mit Hilfe des Computers sich einfache Modelle aufstellen liesen, welche mehr Rechenzeit benötigen, die uns aber der Computer abnimmt.</p>
+<h2 id="2-mathematische-grundlagen">2. Mathematische Grundlagen<a hidden class="anchor" aria-hidden="true" href="#2-mathematische-grundlagen">#</a></h2>
+<h3 id="21-vektoren1-2">2.1 Vektoren<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a hidden class="anchor" aria-hidden="true" href="#21-vektoren1-2">#</a></h3>
+<p>In der Mathematik und Physik sind Vektoren grundlegende Elemente von Gleichungen, die Objekte im Raum und deren Bewegung betreffen. Sie fassen mehrere Dimensionen, also mehrere Werte in einem Objekt zusammen, einer Variablen. Ein Vektor kann auch richtungsweisend Wachstum angeben oder beispielsweise Wahrscheinlichkeiten einer Superposition in der Quantenmechanik<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, er hat also vielzählige Anwendung.</p>
+<img src="assets/images/vektor.png" alt="M2" style="width: 40%; float: right;"/>
+<p>Ein Vektor besitzt:</p>
+<ul>
+<li>Richtung $\alpha$</li>
+<li>Länge $r$</li>
+</ul>
+<p>Er enthält diese aber nicht direkt, sondern Koordinaten. Im Gegensatz zu einem Punkt, gibt der Vektor keine Position an, denn er zeigt vom Koordinatenursprung auf eine Position, die seine Komponenten, also die einzelnen Zahlen im Vektor, beschreiben. Somit gibt der Vektor eine Verschiebung (<em>„Verschiebungsvektor“</em>) an. Allerdings dient er trotzdem oft der Einfachheit halber als Punktersatz und gibt Positionen (<em>„Ortsverktor“</em>) direkt an.</p>
+<p>Variablen, die Vektoren tragen werden oft, wie auch in dieser Arbeit, ein Pfeil ($\vec v$) aufgesetzt. Einzelne Komponenten sind geordnet von oben nach unten aufeinander oder nebeneinander in einer runden Klammer geschrieben. Ein Element im Vektor $\vec v$ and der Stelle $i$ wir als &ldquo;$\vec v_i$&rdquo; angegeben. Dabei beschränkt sich $i$ nicht nur auf positive ganze Zahlen $\N$, sondern es werden auch wörtliche Bezeichnungen und Buchstaben benutzt wie: $x$ $w$. Je ein Element &ldquo;$\vec v_i$&rdquo; ist Teil der Menge namens $\mathbb I$. Geometrisch ist jeder Menge eine Achse zugeordnet, entlang dieser gibt der zugehöriger Wert Verschiebung an. Vektoren werden so anhand der Werte ihrer Komponenten und des Types unterschieden. Die Zahl $n$ an Komponenten wird als Vektor $n$.-Dimension bezeichnet. Die Menge aller Vektoren des gleichen Typen, die sich aber anhand ihrer Werte unterscheiden, wird als Vektorraum bezeichnet.</p>
+<p>Für Addition, Multiplikation und deren Inversion zwischen zwei Vektoren gilt:</p>
+<p>$$\vec a + \vec b = (a_1 + b_1, a_2 + b_2, \dots, a_{i-1} + b_{i-1}, a_i + b_i)$$</p>
+<p>$$\vec a * \vec b = (a_1 * b_1, a_2 * b_2, \dots, a_{i-1} * b_{i-1}, a_i * b_i)$$</p>
+<img src="assets/images/vektor-add.png" alt="M3" style="width: 30%; float: right;"/>
+<p>Es wird komponentenweise addiert, subtrahiert, multipliziert und dividiert. <strong>M3</strong> zeigt wie die Addition veranschaulicht werden kann. Man setzt den lokalen Koordinatenursprung des zweiten Pfeils an den Ersten.</p>
+<p>Für die Multiplikation zwischen einem Vektor und einer reellen Zahl („Skalierung“) $\vec v; n$ gilt:</p>
+<p>$$n * \vec v = (n * v_1, n * v_2, \dots, n * v_{i-1}, v * v_i)$$</p>
+<p>Es wird wieder komponentenweise multipliziert oder dividiert.</p>
+<p>Es gibt viele weitere Operationen und Eigenschaften, erwähnenswert sind noch:</p>
+<ul>
+<li>Vektorlänge aus Satz des Pythagoras: $|\vec v| = \sqrt{v_1^2 + v_2^2 + \dots + v_{i-1}^2 + v_i^2}$</li>
+<li>Vektornormalisierung setzt die Vektorlänge auf den Einheitskreis, damit $|\vec v| = 1$: $\frac{\vec v}{|\vec v|} = (\frac{v_1}{|\vec v|}, \frac{v_2}{|\vec v|}, \dots, \frac{v_{i-1}}{|\vec v|}, \frac{v_i}{|\vec v|})$</li>
+</ul>
+<p>In der Informatik wird ein Vektor viel mehr als Liste geordneter Zahlen verstanden,frei von einer direkten Zuordnung als Position oder Beschleunigung fasst er Eigenschafteneines Objektes oder mehrere Werte einer Eigenschaft zusammen. Ein Vektor in Lua:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua">v <span style="color:#f92672">=</span> { x <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>, y <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>}
+w <span style="color:#f92672">=</span> { x <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>, y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> }
+
+k <span style="color:#f92672">=</span> { x <span style="color:#f92672">=</span> v.x <span style="color:#f92672">+</span> w.x, y <span style="color:#f92672">=</span> v.y <span style="color:#f92672">+</span> w.y}
+</code></pre></div><blockquote>
+<p><em><strong>Definition</strong></em>: Ein Vektor $\vec v = (v_1, v_2, \dots, v_{i-1}, v_i)$ ist ein mathematisches Objekt, welches eine Verschiebung im Raum beschreibt. Die Anzahl $n$ der Komponenten wird als Vektor $n$-ter Dimension bezeichnet. Dargestellt wird er in einer Variable mit aufgesetztem Pfeil, die eine Tupel (also eine endliche Liste) geordneter, reeller Zahlen enthält. Geometrisch veranschaulicht wird der Vektor mit Hilfe eines Pfeiles, welcher vom Koordinatenursprung zum Punkt des Vektors zeigt. Die Evaluierung von Operatoren zwischen Vektoren wird komponentenweise abhängig vom zugeordneten Index oder Bezeichnung ausgeführt, soweit diese vorhanden ist.</p>
+</blockquote>
+<h3 id="22-integrale1-2">2.2 Integrale<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><a hidden class="anchor" aria-hidden="true" href="#22-integrale1-2">#</a></h3>
+<p>Integrale sind, neben Vektoren, das entscheidende Element zur Lösung von Bewegungsgleichungen, aber auch in vielen anderen Bereichen zu finden. Isaac Newton, ein englischer Forscher und Gottfried Wilhelm Leibniz, ein deutsches Universalgenie, formulierten beide Ende des 17. Jahrhunderts unabhängig voneinander den Fundamentalsatz der Analysis, der die Berechnung des Integrals und dessen Umkehrung, die Ableitung, beweist. Der Integral gibt die Fläche unter einer Funktion an. Um diese exakt zu berechnen gibt es keine immer konkrete Vorgehensweise. Nur bei einfachen Fällen sind exakte Lösungen vorhanden, beispielsweise die der gleichförmigen Bewegung, in welcher die Funktion im zu berechnenden Integral immer den gleichen Wert ergibt. Sonst lässt sich der Integral oft nur approximieren, also annähern und wird somit zur Grenzwertfunktion, der eigentliche Wert wird nicht gefunden.</p>
+<img src="assets/images/Integral.png" alt="M4" style="width: 50%;"/>
+<p>Um den (bestimmten) Integral zu berechnen, unterteilt man die Fläche in Streifen, wie <strong>M4</strong> zeigt. Je kleiner diese Rechtecke, umso genauer kann die Fläche berechnet werden. Die Höhe eines Streifens bestimmt der Funktionswert zur Position des Streifens $f(x)$, hier wurde immer die linke Ecke benutzt. Das nennt man Eulersche Integration. Mann kann aber auch die Mitte $f(x + \frac{dx}{2})$ oder das Ende eines Streifens $f(x + dx)$ als Schnittpunkt mit der Funktion wählen.Verschiedene Methoden sollten anhand der geforderten Genauigkeit und Komplexitätgewählt werden. Die Breite des Rechteckes ist die Schrittgröße $dx$ des Integrals. Die Flächen aller Rechtecke werden aufsummiert und bilden die Gesamtfläche.</p>
+<p>Berechnung des Integrals in Lua:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">integral</span>(fn, a, b, dt)
+   <span style="color:#66d9ef">local</span> A <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+
+   <span style="color:#66d9ef">for</span> x <span style="color:#f92672">=</span> a, b, dt <span style="color:#66d9ef">do</span>
+      <span style="color:#66d9ef">local</span> y <span style="color:#f92672">=</span> fn(x)
+
+      A <span style="color:#f92672">=</span> A <span style="color:#f92672">+</span> y <span style="color:#f92672">*</span> dt
+   <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><blockquote>
+<p><em><strong>Definition</strong></em>: Der Integral $\int_{a}^{b}{f(x) * dx}$ ordnet einer Funktion ihre grundlegende Fläche zu. Er wird aus der Summe aller Rechtecke ($f(x) * dx$) der Höhe von jeweils dem Funktionswert aus jeder reellen Zahl in $[a, b]$ und Breite der Veränderung $dx$ zweier aufeinander folgenden Argumente gebildet. Da unendliche viele reelle Zahlen zwischen $a$ und $b$ liegen, muss der Integral approximiert werden, indem die Menge der Zahlen auf endlich reduziert wird. Das heißt $x \in {\N * dx \mid a \leq x \leq b}$ anstatt $x \in [a, b]$. Mit $dx \to 0$ und $n = \frac{b - a}{dx}$ gilt: $\int_a^b{f(x)*dx} = \lim_{n \to \inf}{\sum_{k=0}^n{f(a + dx * k) * dx}}$. Somit ist der Integral eine Grenzwertfunktion.</p>
+</blockquote>
+<h3 id="23-projektion1">2.3 Projektion<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup><a hidden class="anchor" aria-hidden="true" href="#23-projektion1">#</a></h3>
+<p>Projektion ist das neu Zuordnen eines Wertes in einem Vektorraum $\mathbb V = \R^n$ auf einen anderen Raum $\mathbb T = \R^k$. Dabei gilt $\mathbb T \neq \mathbb V$. Es gibt viele verschiedene Methoden zur Projektion, wichtig ist aber, dass aus Sicht von $\mathbb T$ sich nichtsändert. Oft wird dafür ein zu projizierender Wert entlang einer Achse verschoben und skaliert. Unter diesem komplizierten mathematischen Begriff finden sich eine Breite von Anwendungen. Bei einem Beamer (~„Projektor“) wird Licht von der 1-Dimensionalen Lichtquelle durch das gerichtete Fortbewegen auf eine 2-Dimensionale Wand projiziert. In der Computergrafik werden 3-Dimensionale Punkte auf den 2-Dimensionalen Bildschirm mit Hilfe einer perspektivischen Projektionsmatrix projiziert. <strong>M5</strong> zeigt eine Projektion aus dem 2-Dimensionalen Raum parallel zu $k$ auf $m$.</p>
+<img src="assets/images/projektion.png" alt="M5" style="width: 40%; float: center;"/>
+<p>Ein einfaches mathematisches Beispiel ist 1-Dimensionale Projektion in zwei verschiedene Wertebereiche. Gegeben ist der Wert $x$ im Intervall $M = [a, b] = {\R \mid a \leq x \leq b}$ und ein zweiter Intervall $N = [c, d]$. Es soll $x$ in $N$ projiziert werden. Da $M$ und $N$ linear glatt sind, kann man das prozentuale Verhältnis $p$ von $x$ in $M$ mit Hilfe der Intervalllänge errechnen und daraus den projizierten Wert $y$ in $N$. Also $p = \frac{x}{b - a}$ multipliziert mal die Intervalllänge von $N$ plus den Startwert $c$. Somit ist $y$ aus $x$ in $M$ zu $N$: $y = x\div (b-a) * (d - c) + c$. Hier wird also $x$ entlang der 1-dimensionalen X-Achse um $c$ verschoben und mit dem Verhältnis beider Vektorlängenskaliert. Diese Gleichung ist in der Informatik besonders wichtig um beispielsweise einem Sinuswert ${-1 \leq x \leq 1}$ in einer RGB-Farbe in Rotanteil ${0 \leq x \leq 255}$ umzuwandeln.</p>
+<p>Projektion in den zweiten 1-dimensionalen Wertebereich in Lua:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">remap</span>(x, a, b, c, d)
+   <span style="color:#66d9ef">return</span> x <span style="color:#f92672">/</span> (b <span style="color:#f92672">-</span> a) <span style="color:#f92672">*</span> (d <span style="color:#f92672">-</span> c) <span style="color:#f92672">+</span> c
+<span style="color:#66d9ef">end</span>
+</code></pre></div><h3 id="24-die-ortsfunktion3-7">2.4 Die Ortsfunktion<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup><a hidden class="anchor" aria-hidden="true" href="#24-die-ortsfunktion3-7">#</a></h3>
+<p>Die Ortsfunktion $\vec x(t)$ gibt eine Position $\vec x_t$ über die Zeit $t$ an. Diese Position ist dieSumme aller vorherigen Geschwindigkeiten. Bleibt die Geschwindigkeit konstant mit gleichförmige Bewegung, so lässt sich die Position $\vec x_t$ zu Zeit $t$ mit $\vec x(t) = t * \vec x_0$ berechnen. Die Geschwindigkeit ist $x_0$ , weil sie eigentlich die Positionsveränderung über einen Zeitschritt angibt. Anders schreiben lässt sich das als $\underbrace{\vec x(t) = \vec x_0 * 1 + \dots + \vec x_0 * 1}_{t}$.</p>
+<p>Wenn sich aber die Geschwindigkeit über die Zeit auch ändert, beispielsweise durch die Funktion $\vec v(t)$ beschrieben, dann müsste man jede einzelne Geschwindigkeit in Relationzum Zeitschritt aufaddieren. Daraus ergäbe sich dieses fraktale, also aus sich selbst bestehendes Muster:</p>
+<p>$$
+\vec x(t) = \underbrace{
+\underbrace{
+\vec v(\frac{0}{1} * \delta t) * \frac{\delta t}{1}}<em>{
+\underbrace{
+\vec v(\frac{0}{2} * \delta t) * \frac{\delta t}{2}}</em>{
+\dots
+} +
+\underbrace{
+\vec v(\frac{1}{2} * \delta t) * \frac{\delta t}{2}}<em>{
+\dots
+}
+} +
+\underbrace{
+\vec v(\frac{1}{1} * \delta t) * \frac{\delta t}{1}}</em>{
+\underbrace{
+\vec v(\frac{2}{2} * \delta t) * \frac{\delta t}{2}}<em>{
+\dots
+} +
+\underbrace{
+\vec v(\frac{3}{2} * \delta t) * \frac{\delta t}{2}}</em>{
+\dots
+}
+} +
+\dots +
+\underbrace{
+\vec v(\frac{t-1}{1} * \delta t) * \frac{\delta t}{1}}<em>{
+\underbrace{
+\vec v(\frac{2t-1}{2} * \delta t) * \frac{\delta t}{2}}</em>{
+\dots
+} +
+\underbrace{
+\vec v(\frac{2t-2}{2} * \delta t) * \frac{\delta t}{2}}<em>{
+\dots
+}
+} +
+\underbrace{
+\vec v(\frac{t}{1} * \delta t) * \frac{\delta t}{1}}</em>{
+\underbrace{
+\vec v(\frac{2t-1}{2} * \delta t) * \frac{\delta t}{2}}<em>{
+\dots
+} +
+\underbrace{
+\vec v(\frac{2t}{2} * \delta t) * \frac{\delta t}{2}}</em>{
+\dots
+}
+}
+}_{t}
+$$</p>
+<p>Diese Gleichung faltet sich weiter auf bis zu einem infinitesimalen Zeitschritt. Also die nächst größer reelle Zahl über Null. Die Lösung der Ortsfunktion wird in 3.3 Bewegung des Massepunktes beschrieben.</p>
+<h3 id="25-kollisionserkennung--punkt-in-aabb5">2.5 Kollisionserkennung – Punkt in AABB<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup><a hidden class="anchor" aria-hidden="true" href="#25-kollisionserkennung--punkt-in-aabb5">#</a></h3>
+<p>Eine <em>„Axis Aligned Bounding Box“</em> (AABB) ist ein Rechteck,beziehungsweise ein Quader, welcher parallel zu den Achsen eines Koordinatensystems liegt. Die Kollisionserkennung beschäftigt sich damit, ob ein Körpereinen Zweiten penetriert. Um mathematisch zu erkennen ob sich ein Punkt in einer AABB befindet, muss man an die Ausdehnung des Körpers auf eine Dimension herunterbrechen. Das bedeutet man muss auf allen Achsen des Koordinatensystems überprüfen, ob diejeweilige Koordinate des Punktes innerhalb der Ausdehnung des Quaders in dieser Achse liegt oder nicht. Liegt sie in allen, so befindet sich der Punkt innerhalb der AABB. Mit einer AABB von Position $(k, l, \dots)$ und einer Breite und Höhe $w$ $h$ $\dotsb$ st jede Position derinnerhalb $[(k, k + w), (l, l + h), \dots]$ auch in der AABB. <strong>M6</strong> zeigt inwiefern eine Position Teilder Menge ist.</p>
+<img src="assets/images/aabb-collision.png" alt="M6" style="width: 40%"/>
+<p>AABB-Check in Lua:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua"><span style="color:#66d9ef">if</span> (k <span style="color:#f92672">&lt;=</span> x <span style="color:#f92672">and</span> x <span style="color:#f92672">&lt;=</span> k <span style="color:#f92672">+</span> w) <span style="color:#f92672">and</span> (l <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> y <span style="color:#f92672">&lt;=</span> l <span style="color:#f92672">+</span> h) <span style="color:#66d9ef">then</span>
+   <span style="color:#75715e">-- (x, y) ist in AABB</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><h2 id="3-physikalische-grundlagen">3. Physikalische Grundlagen<a hidden class="anchor" aria-hidden="true" href="#3-physikalische-grundlagen">#</a></h2>
+<h3 id="31-newtonsche-gesetze">3.1 Newtonsche Gesetze<a hidden class="anchor" aria-hidden="true" href="#31-newtonsche-gesetze">#</a></h3>
+<p>Isaac Newton formulierte 1687 in seinem Hauptwerk „Philosophiae Naturalis Principia Mathematica“ die heute bekannten drei Newtonschen Gesetze. Sie legen die Grundlagen der Klassischen Mechanik. Mit diesen kann man die Bewegung von Körpern makroskopisch sehr gut beschreiben.</p>
+<blockquote>
+<p><strong>I</strong> Trägheitsgesetz: <em>&ldquo;Ein Körper verharrt im Zustand der Ruhe oder der gleichförmig geradlinigen Bewegung, sofern er nicht durch einwirkende Kräfte zur Änderung seines Zustands gezwungen wird.&quot;</em><sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup></p>
+</blockquote>
+<p>Das Trägheitsgesetz meint, dass der Geschwindigkeitsvektor $\vec v$ konstant ist, solange keine Kraft auf ihn wirkt. In der Realität ist dies nicht einfach zu beobachten, weil besonders Reibung, wenn auch nur an der Luft, schon Kraft genug aufbringt den Körper langsam zu entschleunigen.</p>
+<blockquote>
+<p><strong>II</strong> Aktionsprinzip: <em>&ldquo;Die Änderung der Bewegung ist der Einwirkung der bewegenden Kraft proportionalund geschieht nach der Richtung derjenigen geraden Linie, nach welcher jene Kraft wirkt.&quot;</em><sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup></p>
+</blockquote>
+<p>Das Aktionsprinzip bedeutet, dass je stärker die einwirkende Kraft, umso schneller die Bewegungsänderung. Auch ist die Kraft gerichtet und die Bewegungsänderung entspricht dieser Richtung. Ein Zusatz ist, dass die Bewegungsänderung abhängig von der Masse ist, je größer die Masse, umso geringer die Bewegungsänderung.</p>
+<blockquote>
+<p><strong>III</strong> Actio und Reactio: <em>&ldquo;Kräfte treten immer paarweise auf. Übt ein Körper A auf einen anderen Körper B eine Kraft aus (actio), so wirkt eine gleich große, aber entgegen gerichtete Kraft von Körper B auf Körper A (reactio).&quot;</em><sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup></p>
+</blockquote>
+<p>Das Dritte Newtonsche Gesetz Actio und Reactio erklärt, bei dem Versuch einenKörper in Bewegung zu setzen, widersteht dieser abhängig von seiner Masse mit einerentgegengesetzten Kraft. Da diese Kräfte paarweise und entgegengesetzt auftreten hat daszur Folge, dass die Summe aller Kräfte in einem geschlossenen System gleich Null ist.</p>
+<h3 id="32-massepunkte">3.2 Massepunkte<a hidden class="anchor" aria-hidden="true" href="#32-massepunkte">#</a></h3>
+<p>Ein Massepunkt ist eine Abstraktion eines Körpers. Er hat keine Ausdehnung und besteht aus:</p>
+<ul>
+<li>Position $\vec x$, für bewegten Massepunkt auch eine Geschwindigkeit $\vec v$</li>
+<li>Masse $m$</li>
+<li>Inverse masse $w = m^{-1}$ (da sie oft gebraucht wird, ist sie hier aufgelistet)</li>
+</ul>
+<p>Das er keine Ausdehnung hat bedeutet, dass er sich in verschiedenen Rotationswinkeln um seine Achse nicht unterscheiden lässt und er kann auch physikalisch mit seiner Rotationnicht die Bewegung anderer Körper beeinflussen. Somit hat er in seiner Bewegung nur Translationsfreiheitsgrade, also Verschiebung parallel zu den Achsen des Koordinatensystems. Der Massepunkt wird häufig in physikalischen Berechnungen genutzt weil die Rotation eines Körpers gerade wegen des Ignorierens von Luftwiederstand in idealisierten Modellen zum Beispiel im Flug keinen Unterschied macht. In den man in jedem Simulationsschritt die Geschwindigkeit des Massepunktes mit einem Luftwiderstandskoeffizienten $r \in [0, 1] = {\R \mid 0 \leq r \leq 1}$ multipliziert, kann man dennoch, wenn der Massepunkt Bestandteil eines komplexeren Körpers ist, Reibung an der Luft simulieren. Man kann auch Elastizität simulieren, indem man während eines Kollisionskontaktes die Geschwindigkeit dämpft. Das geschieht wie beim Luftwiederstand mit einem Elastizitätskoeffizienten $e \in [0, 1] = {\R \mid 0 \leq e \leq 1}$.</p>
+<h3 id="33-bewegung-des-massepunktes3">3.3 Bewegung des Massepunktes<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup><a hidden class="anchor" aria-hidden="true" href="#33-bewegung-des-massepunktes3">#</a></h3>
+<p>Die Bewegung des Massepunktes beschreiben die Newtonschen Gesetze. Damit sich der Massepunkt bewegt, braucht es eine einwirkende Kraft oder eine ursprüngliche Geschwindigkeit. An dieser bewegt er sich linear entlang, wenn keine weitere Kraft einwirkt. Meistens aber wirkt die Gravitation auf den Massepunkt und andere externe Kräfte $\vec f$ wie eine Kollisionsreaktion. Wenn von zwei Seiten Kräfte wirken, dann gleichen sie sich aus,dass heißt der Körper bewegt sich deshalb dann nicht. Die Geschwindigkeit zu einem bestimmten Zeitpunkt ist die Geschwindigkeit vom Zeitpunkt davor plus die Beschleunigung, welche relativ zur Masse steht, multipliziert mal den Zeitschritt. Also $\vec v = \int_0^t{\vec f_t * w * dt}$. Hier wird der Integral sichtbar, denn die Geschwindigkeit $\vec v$ ist auch
+eine ununterbrochene Funktion nach Zeit, die nicht immer nur konstant ist.</p>
+<p>So ist die Position $\vec x$ die Summe aller vorherigen Geschwindigkeiten mal $\epsilon$ (die
+Infinitesimale), beziehungsweiße $dt$. Somit gilt $\vec x(t) = \int_0^t{\vec v(t) * dt}$, $\vec x(t) = \int_0^t{(\int_0^t{\vec f * w * dt}) * dt}$. Für eine fortlaufende Simulation mit gegebenen einwirkenden Kräfte $\vec f$, sowie eventueller Startposition- und Geschwindigkeit $\vec x_0$ $\vec v_0$ und Schrittgröße $\delta t$ muss in jedem Zeitschritt allerdings nur folgendes berechnet werden (Eulersche Methode):</p>
+<p>$$
+\begin{aligned}
+t &amp;= t + \delta t \<br>
+\vec v &amp;= \vec v + \vec f * \delta t \<br>
+\vec x &amp;= \vec x + \vec v * \delta t
+\end{aligned}
+$$</p>
+<p>Es gibt auch andere Möglichkeiten die fortlaufende Bewegung zu berechnen indem man zum Beispiel anders integriert. Eine zweite Methode wäre die Verlet Integration. Diese wird auch in der Implementation der Simulation genutzt, weil dann die Projektion der Zwangsbedingungen einfach einzubauen ist, da Positionen direkt manipuliert werden und nicht Geschwindigkeiten. Zunächst ist auch gleiches wie oben zu wissen. Dann wird fortlaufend folgendes berechnet:</p>
+<p>$$
+\begin{aligned}
+t &amp;= t * \delta t \<br>
+\vec v &amp;= \vec v + \vec f * \delta t \<br>
+\vec p &amp;= \vec x + \vec v * \delta t \<br>
+\vec v &amp;= (\vec p - \vec x) \div \delta t \<br>
+\vec x &amp;= \vec p
+\end{aligned}
+$$</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua">t <span style="color:#f92672">=</span> t <span style="color:#f92672">+</span> dt
+
+vx <span style="color:#f92672">=</span> vx <span style="color:#f92672">+</span> fx <span style="color:#f92672">*</span> dt
+vy <span style="color:#f92672">=</span> vy <span style="color:#f92672">+</span> fy <span style="color:#f92672">*</span> dt
+
+px <span style="color:#f92672">=</span> x <span style="color:#f92672">+</span> vx <span style="color:#f92672">*</span> dt
+py <span style="color:#f92672">=</span> y <span style="color:#f92672">+</span> vy <span style="color:#f92672">*</span> dt
+
+vx <span style="color:#f92672">=</span> (px <span style="color:#f92672">-</span> x) <span style="color:#f92672">/</span> dt
+vy <span style="color:#f92672">=</span> (py <span style="color:#f92672">-</span> y) <span style="color:#f92672">/</span> dt
+
+x <span style="color:#f92672">=</span> px
+y <span style="color:#f92672">=</span> py
+</code></pre></div><p>Der Vorteil dieser Methode ist, dass wenn $\vec p$ durch die Projektion der Zwangsbedingungen manipuliert wird, verändert sich auch $\vec v$ daher kommt der Name <em>„Positions bedingte Dynamiken“</em>.</p>
+<h2 id="4-zwangsbedingungen">4. Zwangsbedingungen<a hidden class="anchor" aria-hidden="true" href="#4-zwangsbedingungen">#</a></h2>
+<h3 id="41-einführung-in-zwangsbedingungen-und-deren-wirkung">4.1 Einführung in Zwangsbedingungen und deren Wirkung<a hidden class="anchor" aria-hidden="true" href="#41-einführung-in-zwangsbedingungen-und-deren-wirkung">#</a></h3>
+<p>Zwangsbedingungen („Constraints“) sind der der entscheidende Teil, welcher aus der unabhängigen Bewegung der Massepunkten, starre, weiche und komplexe Körper schafft. Dies geschieht, indem sie Massepunkte verbindet, und in ihrer Bewegung zu- und voneinander indirekt einschränkt. Eine Bedingung $C(\vec x): \R^n \to \R$<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> ist eine Funktion, die den Zustand eines Systems $\vec x$ annimmt und einen einzelnen Wert $y$ ausgibt, der beschreibt, inwiefern dieses System der Bedingung zuwiderläuft. Es gibt zwei verschiedene Arten in denen eine Bedingung erfüllt sein kann<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>. Erfüllt wenn ihr Wert:</p>
+<ul>
+<li>Gleichheit (<em>&ldquo;equality&rdquo;</em>): gleich Null ist ($C(\vec x) = 0$).</li>
+<li>Ungleichheit (<em>&ldquo;inequality&rdquo;</em>): größer oder gleich Null ist ($C(\vec x) \geq 0$).</li>
+</ul>
+<p>Wie stark diese umgesetzt werden sollen beschreibt ein Festigkeitskoeffizient<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> $k \in [0, 1]$, welcher mit dem Funktionswert multipliziert wird. Umso kleiner der Festigkeitskoeffizient, desto näher ist die Funktion daran, erfüllt zu werden. So gibt es starre und weiche Bedingungen.</p>
+<p>Außerdem unterscheidet man Zwangsbedingungen noch in der Art des Systems und was sie einschränken<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>:</p>
+<ul>
+<li>Abstand zweier Punkte soll erfüllt sein (<em>&ldquo;Distance C.&quot;</em>)</li>
+<li>Winkel zwischen zwei Punkten soll erfüllt sein (<em>&ldquo;Bending C.&quot;</em>)</li>
+<li>Volumen eines Körpers, beschrieben durch Eckpunkte soll erfüllte sein (<em>&ldquo;Volume C.&quot;</em>)</li>
+<li>Kollision, in erster Körper darf einen Zweiten nicht schneiden (<em>&ldquo;Collision C.&quot;</em>)</li>
+</ul>
+<img src="assets/images/pendel.png" alt="M7" style="width: 40%; float: right;"/>
+<p>Für unsere Simulation sind nur Zwangsbedingungen auf den Abstand wichtig, mit ihnen kann man auch teilweise die anderen Bedingungen umsetzen.</p>
+<p><strong>M7</strong> zeigt wie die Position des Massepunktes durch die Länge des Fadenpendels eingeschränkt ist. Solches Verhalten lässt sich auch mit Zwangsbedingungen modellieren.</p>
+<h3 id="42-erzwungener-abstand">4.2 Erzwungener Abstand<a hidden class="anchor" aria-hidden="true" href="#42-erzwungener-abstand">#</a></h3>
+<p>Funktionen, die den Abstand zwischen zwei Massepunkten einschränken, sind wie Stöcke. Die Position und Rotation des Stockes lassen sich von den Positionen seiner beiden Enden beschreiben. Allerdings wird ein Stock nicht länger oder kürzer werden, somit können sich beide Enden nicht frei im Raum bewegen, sondern der Abstand muss immer der Gleiche sein. Solch eine Funktion besteht aus<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>:</p>
+<ul>
+<li>einer Länge $d$</li>
+<li>die Position zweier Massepunkte $\vec a$ $\vec b$</li>
+<li>einem Festigkeitskoeffizienten $k$</li>
+</ul>
+<p>Aus diesen Werten wird die Funktion $C$ gebildet. Diese soll Null sein, wenn der Abstand zwischen $a$ und $b$ gleich $d$ ist und immer größer werden, desto mehr sie sich entfernen. Der Abstand zwischen
+$\vec a$ und $vec b$ lässt sich mit dem Satz des Pythagoras berechnen. Die Hypotenuse ist die Länge $\sqrt{(a_x - b_x)^2 + (a_y - b_y)^2}$ also $|\vec a - \vec b|$ (Kurzschreibweise).</p>
+<p>So kann man die Constraint als $C(\vec a, \vec b) = (|\vec a - \vec b| - d) * k$<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> schreiben.</p>
+<h3 id="43-projektion-in-den-erzwungenen-abstand">4.3 Projektion in den erzwungenen Abstand<a hidden class="anchor" aria-hidden="true" href="#43-projektion-in-den-erzwungenen-abstand">#</a></h3>
+<p>Nun gilt es diese Funktion auf die Position der beiden Massepunkte zu projizieren.Die Position der Punkte soll so verändert werden, dass die Bedingung erfüllt ist. DieRichtung, also der Vektor $\vec r$ der von Punkt $\vec a$ zu $\vec b$ zeigt, lässt sich aus der Differenzzwischen den beiden Punkten berechnen: $\vec a - \vec b$. Dieser Vektor muss nun normalisiertwerden damit die Länge 1 ist. Dazu wird $\vec r$ von der Vektorlänge dividiert. Zusammengesetzt sie das so aus: $\frac{\vec a - \vec b}{|\vec a - \vec b|}$. Das bildet den Strahl, entlang welchem die Punkte verschoben werden müssen, um sie in den geltenden Funktionsbereich zu projizieren. Die Stärke der Verschiebung, sprich die ehemalige Vektorlänge, ist der Wert der Funktion der Zwangsbedingung. Der erste Massepunkt muss entgegengesetzt zum Zweiten verschoben werden. Somit entsteht die Verschiebung von $\vec a$ und negativ die gleiche für $\vec b$:</p>
+<p>$$\delta \vec a = k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|}$$</p>
+<p>Da beide Punkte Massepunkte sind, also auch eine Masse haben, soll diese in die Gleichung so einfliesen, dass die beidseitige Verschiebung im Masseverhältnis gewichtet ist. Dazu muss der Anteil des Massepunkte an der Gesamtmasse berechnet werden. Das geschieht für $a$ mit $\frac{w_a}{w_a + w_b}$ beziehungsweise
+$\frac{w_b}{w_a + w_b}$ für $b$. Somit lässt sich eine Distance Constraint folgendermaßen projizieren<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>:</p>
+<img src="assets/images/constraint-projection.png" alt="M8" style="width: 50%; float: right;"/>
+<p>$$
+\begin{aligned}
+\delta \vec a &amp;= \frac{w_a}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|} \<br>
+\delta \vec b &amp;= - \frac{w_b}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|}
+\end{aligned}
+$$</p>
+<p>Die Projektion der Punkte in Lua. Wiederholende Werte wie die Vektordifferenz oder die Länge werden extra zwischengespeichert:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Lua" data-lang="Lua">dx <span style="color:#f92672">=</span> i.px <span style="color:#f92672">-</span> j.px
+dy <span style="color:#f92672">=</span> i.py <span style="color:#f92672">-</span> j.py
+
+l <span style="color:#f92672">=</span> (dx<span style="color:#f92672">^</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> dy<span style="color:#f92672">^</span><span style="color:#ae81ff">2</span>)<span style="color:#f92672">^</span><span style="color:#ae81ff">.5</span>
+
+ox <span style="color:#f92672">=</span> (l <span style="color:#f92672">-</span> d) <span style="color:#f92672">*</span> (dx <span style="color:#f92672">/</span> l)
+oy <span style="color:#f92672">=</span> (l <span style="color:#f92672">-</span> d) <span style="color:#f92672">*</span> (dy <span style="color:#f92672">/</span> l)
+
+i.px <span style="color:#f92672">=</span> i.px <span style="color:#f92672">+</span> ((i.w <span style="color:#f92672">/</span> (i.w <span style="color:#f92672">+</span> j.w) <span style="color:#f92672">*</span> ox) <span style="color:#f92672">*</span> k)
+i.px <span style="color:#f92672">=</span> i.px <span style="color:#f92672">+</span> ((i.w <span style="color:#f92672">/</span> (i.w <span style="color:#f92672">+</span> j.w) <span style="color:#f92672">*</span> oy) <span style="color:#f92672">*</span> k)
+
+i.px <span style="color:#f92672">=</span> i.px <span style="color:#f92672">-</span> ((j.w <span style="color:#f92672">/</span> (i.w <span style="color:#f92672">+</span> j.w) <span style="color:#f92672">*</span> ox) <span style="color:#f92672">*</span> k)
+i.px <span style="color:#f92672">=</span> i.px <span style="color:#f92672">-</span> ((j.w <span style="color:#f92672">/</span> (i.w <span style="color:#f92672">+</span> j.w) <span style="color:#f92672">*</span> oy) <span style="color:#f92672">*</span> k)
+</code></pre></div><h2 id="5-implementation">5. Implementation<a hidden class="anchor" aria-hidden="true" href="#5-implementation">#</a></h2>
+<h3 id="51-programmaufbau-und-ablauf">5.1 Programmaufbau und Ablauf<a hidden class="anchor" aria-hidden="true" href="#51-programmaufbau-und-ablauf">#</a></h3>
+<p>Die Simulation läuft fortwährend nach Start des Programms. Zu Beginn sind Eingangsvariablen zu wählen (ein <em>„Statevector“</em>). Das zu simulierende System ist eine Menge von Massepunkten und Funktionen der Zwangsbedingungen. Das visuelle Abbild eines Zeitschrittes wird am Ende dessen aktualisiert.</p>
+<p>Der Ablauf des Programms sieht folgendermaßen aus<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>:</p>
+<ol start="0">
+<li>
+<p>Lege Zeitschritt $\delta t$ fest, Luftwiderstandskoeffizient $r$ und wirkende Kräfte $\vec f$ wie Gravitation</p>
+</li>
+<li>
+<p>Initialisiere Massepunkte mit Position $\vec x$, Geschwindigkeit $\vec v$ und inverser Masse $w = m^{-1}$</p>
+</li>
+<li>
+<p>Initialisiere Funktionen der erzwungenen Abstände mit Länge $d$, Festigkeit $k$ und Stellen $i$ $j$ der Massepunkte</p>
+</li>
+<li>
+<p>Für jeden Massepunkt bei $d$:</p>
+<ol>
+<li>aktualisiere Geschwindigkeit: $\vec v_i = \vec v_i + \delta f * w_i * \delta t$</li>
+<li>(dämpfe Geschwindigkeiten: $\vec v_i = \vec v_i * r$)</li>
+<li>setze nächste Position: $\vec p_i = \vec x_i + \vec v_i * \delta t$</li>
+</ol>
+</li>
+<li>
+<p>Für jede Constraint $C$ mit Stelle $i$ $j$:</p>
+<ol>
+<li>projiziere Constraint:</li>
+</ol>
+</li>
+</ol>
+<p>$$
+\begin{aligned}
+\vec a &amp;= \vec a + \frac{w_a}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|} \<br>
+\vec b &amp;= \vec b - \frac{w_b}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|}
+\end{aligned}
+$$</p>
+<ol start="5">
+<li>
+<p>Für jeden Massepunkt bei $i$:</p>
+<ol>
+<li>akquiriere Geschwindigkeit: $\vec v = (\vec p - \vec x) \div \delta t$</li>
+<li>setze endgültige Position: $\vec x = \vec p$</li>
+</ol>
+</li>
+<li>
+<p>Wiederhole ab 3.</p>
+</li>
+</ol>
+<h3 id="52-implementation-in-lua">5.2 Implementation in Lua<a hidden class="anchor" aria-hidden="true" href="#52-implementation-in-lua">#</a></h3>
+<img src="assets/images/lua.png" alt="M9" style="width: 20%; float: right;"/>
+<p>Lua ist eine Skriptsprache mit einem ursprünglich stark wissenschaftlichen Bezug. Sie wurde 1993 an der Universität PUC-Rio entwickelt. Lua ist sehr einfach zu lesen, denn sie gleicht stark dem Englischen und benutzt weniger Sonderzeichen. Deshalb wird sie in dieser Arbeit auch in den Beispielen benutzt. Man ordnet Lua folgende Eigenschaften zu<sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup>:</p>
+<ul>
+<li>interpretiert: Code wird direkt vor dem Ausführen kompiliert, auch CLI möglich</li>
+<li>leichtgewichtig: 297kB, läuft daher auch auf Mikrocontrollern</li>
+<li>schwach, dynamisch: Typen werden interpretiert, können geändert werden</li>
+<li>eingebettet: ergänzt in vielen Anwendungen C/C++, einfach implementiert</li>
+<li>funktional: globale Daten werden in Funktionen geändert, weitergegeben</li>
+</ul>
+<p>Mit Metatables ist auch objektorientierte Programmierung möglich, da diese aber umständlich implementiert ist, wird nicht mit Methoden, sonder mit typspezifischen Funktionen gearbeitet. Das bedeutet der Argumenttyp ist im Namen der Funktion zu erkennen. Diese Funktion nimmt ein Objekt an, verändert es und gibt es wieder aus oder speichert es direkt, da Funktionen in Lua globalen Zugriff haben. Objekte des gleichen Typs werden nach Erschaffung in einer Liste gespeichert und in jedem Zeitschritt aktualisiert. Da jeweils über die Listen iteriert wird, sind Schritte in 5. über 3.0, aber in 3. gesetzt, um effektiver zu sein. Außerdem, damit sich keine Massepunkte außerhalb des Fensters bewegen, prallen sie daran ab. Das geschieht jeweils mit einem 1-Dimensionalen AABBKollisionstest. Wenn dieser positiv ist, wird die Geschwindigkeit auf dieser Achse umgekehrt, sowie die Position in einen validen Bereich gesetzt.</p>
+<p>Zur Visualisierung und interaktiven Gestaltung wurde LÖVE-2D benutzt, ein Opensource Spiele Framework. Diese Implementation ist 2D, alles funktioniert abergenauso in 3D, da an keiner Stelle mit Rotation gerechnet werden muss.</p>
+<p>Der komplette Quellcode, sowie die Programme für Linux und Windows befinden sich auf:</p>
+<p><a href="">github.com/m4dh0rs3/PBD/</a></p>
+<h2 id="6-auswertung">6. Auswertung<a hidden class="anchor" aria-hidden="true" href="#6-auswertung">#</a></h2>
+<p>Das Ziel der Facharbeit war eine einfache Methode vorzustellen, die es dennoch ermöglicht starre und weiche Körper zu simulieren. Im Hinblick auf das fertiggestellte Programm ist dies definitiv möglich. Rein visuell fallen wenig Fehler auf, nur wenn die Geschwindigkeiten oder die Komplexität sehr hoch ist, führt das meist zu einer akkumulierenden Überreaktion. Mit genügend Auswichtung der Simulationswerte wie Gravitation, Zeitschritt, Luftreibung und den Massen kann auf jeden Fall ein beachtbares Ergebnis erzeugt werden. Zusätzlich bietet die PBD eine hohe Varietät in der Art des zu simulierenden Modells im Vergleich zu anderen Methoden. Wenn noch die Kollisionsbedingungen für dynamische Körper implementiert sind, kann man die Simulation für die meisten Zwecke als vollständig betrachten. Der nächste Schritt wäre eine 3-Dimensionale Implementation und eventuell in einer Low-Level Programmiersprache um die Leistung zu erhöhen. Außerdem könnte man mit Vertex-Shader, Programme, die auf der GPU laufen, massiv parallel arbeiten. Zur Zeit kann das Programm in Lua mit LÖVE-2D Massepunkte im Eintausender-Bereich simulieren. Mit einer Dichte-Bedingung ist auch das Simulieren von Wasser möglich ist, für ein visuell ansprechendes Ergebnis sind aber vielmehr Massenpunkte von Nöten. Auch für sehr einfache System wie ein Doppelpendel, welches in allen anderen Methoden schwieriger zu simulieren ist, kann die PBD-Methode helfen. So ist mit erhöhter Genauigkeit die Simulation auch für wissenschaftliche Zwecke geeignet. Das schlussendliche Programm hat auch einen Wert für den Unterricht, da anhand dessen zum Beispiel die Newtonschen Gesetze interaktiv erklärt werden können. Man könnte noch eine Integration mit dynamischen Zeitschritt einzubauen, um das Verhältnisvon Genauigkeit zu Zeitaufwand weiter zu optimieren. Verschiedenste Funktionen für Zwangsbedingungen können noch implementiert werden, auch wenn deren Projektion kompliziert ist. Eine visuelle Darstellung, ob eine Position die Zwangsbedingung erfüllt oder nicht, könnte hilfreich sein.</p>
+<p>Ich hoffe diese Arbeit gibt einen Anfang in weiteren Versuchen die Realität nachzuahmen.Die Idee Modelle am Computer zu simulieren um sonst nicht umsetzbare Probleme zu behandeln und zu analysieren ist in diesem Jahrhundert besonders wichtig, da Experimente, die neue Einblicke liefern sollen, meist viel zu aufwendig sind.</p>
+<p>Auch wenn dieses Projekt mich sehr viel Zeit gekostet hat, gab es mir einen umfangreichen Einblick in komplexere Mathematik und besonders die numerische Physik. Lange habe ich solche Methoden benutzt ohne zu wissen, was mathematisch dahinter steckt. Diese Arbeit hat ein größeres Interesse geweckt, die Mathematik in vielen neuen Themen anzuwenden. Schlussendlich hat die Simulation auch einen großen Unterhaltungswert und macht neugierig, wie das Ein oder Andere wohl funktioniert und was dahinter steckt.</p>
+<h1 id="7-quellen">7. Quellen<a hidden class="anchor" aria-hidden="true" href="#7-quellen">#</a></h1>
+<h2 id="71-bilder-_m_">7.1 Bilder <em>M</em><a hidden class="anchor" aria-hidden="true" href="#71-bilder-_m_">#</a></h2>
+<ol>
+<li><strong>42 Jahre CPU Entwicklung</strong>, Daten von u. A. <strong>K. Rupp</strong>, einzusehen auf <em>github.com/karlrupp/microprocessor-trend-data/commits/master</em></li>
+<li>Vektor, <strong>B. Schöps</strong></li>
+<li>Vektoraddition, <strong>B. Schöps</strong></li>
+<li>Integral, <strong>B. Schöps</strong></li>
+<li><strong>Projektion an k zu m</strong> von <strong>J. Niesen</strong>, überarbeitet von <strong>B. Schöps</strong>, einzusehen auf <em>commons.wikimedia.org/wiki/File:Oblique_projection.svg</em></li>
+<li>AABB Mengenbild, <strong>B. Schöps</strong></li>
+<li>Pendel, <strong>B. Schöps</strong></li>
+<li><strong>Constraint Projection</strong>, aus <strong>E1</strong> <em>gleichnamiges Kapitel 3.3</em>, überarbeitet von <strong>B. Schöps</strong></li>
+<li>Lua Logo einzusehen auf <em>lua.org</em></li>
+</ol>
+<h2 id="72-referenzen-_b_-und-entnommen-_e_">7.2 Referenzen <em>B</em> und Entnommen <em>E</em><a hidden class="anchor" aria-hidden="true" href="#72-referenzen-_b_-und-entnommen-_e_">#</a></h2>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><strong>„Essential Mathematics for Games and Interactive Applications“</strong> von <strong>J. Van Verth, L. Bishop</strong>: <em>Kapitel 2: Vectors and Points, 6: Interpolation, 7: Viewing and Projection, 12.3.2: AABB, 13: Rigid-Body Dynamics</em> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Vortrag <strong>„Analogrechnen“</strong> von <strong>Bernd Ulmann</strong> auf dem CCC <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><strong>„3D Math Primer for Graphics and Game Development“</strong> von <strong>F. Dunn, I. Parberry</strong>: <em>Kapitel 2: Vectors, 11, 12: Mechanics, 11.7: The Integral</em> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><strong>„The Nature Of Code“</strong> von <strong>Daniel Shiffman</strong>: <em>Kapitel 1: Vectors, 2: Forces, 4: Particle Systems</em> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>Brilliant Kurse <strong>„Classical Mechanics“</strong>, <strong>„Differential Equations 1“</strong> (<em>brilliant.org</em>) <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><strong>„Game Physics Coockbook“</strong> von <em>G. Szauer</em> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><strong>„Mathematische Prinzipien der Naturlehre“</strong> von <strong>Isaac Newton</strong> (Dt. <strong>J. PH. Wolfers</strong>) (<em>zusammengefasst auf de.wikipedia.org/wiki/Newtonsche_Gesetze</em>) <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p>Paper <strong>„Position Based Dynamics“</strong> von u. A. <strong>Matthias Müller</strong>: <em>Kapitel 3: Position Based Simulation</em> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9" role="doc-endnote">
+<p>Website <strong>„About Lua“</strong> auf <em>lua.org/about</em> <a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+</div>
+  <footer class="post-footer">
+    <nav class="paginav">
+      <a class="prev" href="http://m4dh0rs3.github.io/de/posts/cv/">
+        <span class="title">« Vorherige Seite</span>
+        <br>
+        <span>Lebenslauf</span>
+      </a>
+    </nav>
+
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Positionsbedingte Dynamiken on twitter"
+        href="https://twitter.com/intent/tweet/?text=Positionsbedingte%20Dynamiken&amp;url=http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f&amp;hashtags=">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Positionsbedingte Dynamiken on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f&amp;title=Positionsbedingte%20Dynamiken&amp;summary=Positionsbedingte%20Dynamiken&amp;source=http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Positionsbedingte Dynamiken on reddit"
+        href="https://reddit.com/submit?url=http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f&title=Positionsbedingte%20Dynamiken">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Positionsbedingte Dynamiken on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Positionsbedingte Dynamiken on whatsapp"
+        href="https://api.whatsapp.com/send?text=Positionsbedingte%20Dynamiken%20-%20http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Positionsbedingte Dynamiken on telegram"
+        href="https://telegram.me/share/url?text=Positionsbedingte%20Dynamiken&amp;url=http%3a%2f%2fm4dh0rs3.github.io%2fde%2fposts%2fpbd%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main><footer class="footer">
+    <span>&copy; 2021 <a href="http://m4dh0rs3.github.io/de/">Benedikt Schöps</a></span>
+    <span>&middot;</span>
+    <span>Powered by <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a></span>
+    <span>&middot;</span>
+    <span>Theme <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a></span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)">
+    <button class="top-link" id="top-link" type="button" accesskey="g">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z" />
+        </svg>
+    </button>
+</a>
+
+
+
+<script defer src="/assets/js/highlight.min.27cd435cc9ed6abb4b496581b151804f79f366c412620272bb94e2f5f598ebcc.js" integrity="sha256-J81DXMntartLSWWBsVGAT3nzZsQSYgJyu5Ti9fWY68w="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<script>
+    window.onload = function () {
+        if (localStorage.getItem("menu-scroll-position")) {
+            document.getElementById('menu').scrollLeft = localStorage.getItem("menu-scroll-position");
+        }
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+    function menu_on_scroll() {
+        localStorage.setItem("menu-scroll-position", document.getElementById('menu').scrollLeft);
+    }
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+</body>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+    integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+    integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+    crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+    integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+    crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                
+                { left: "$", right: "$", display: false },
+                
+            ]
+        });
+    });
+</script>
+
+
+</html>

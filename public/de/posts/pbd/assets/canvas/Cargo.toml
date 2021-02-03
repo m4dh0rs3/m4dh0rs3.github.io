@@ -1,0 +1,14 @@
+[package]
+name = "pbd-gui"
+version = "0.1.0"
+authors = ["m4dh0rs3 <schoeps.benedikt@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+macroquad = "0.3.0-alpha.14"
+phf = { version = "0.8", features = ["macros"] }
+
+[profile.dev.package.'*']
+opt-level = 3

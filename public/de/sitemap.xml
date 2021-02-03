@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/</loc>
+    <lastmod>2021-02-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/posts/cv/</loc>
+    <lastmod>2021-02-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/posts/cv/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/posts/cv/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/posts/</loc>
+    <lastmod>2021-02-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/posts/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/posts/pbd/</loc>
+    <lastmod>2020-02-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/archives/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/archives/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/archives/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/categories/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/search/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/search/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/search/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://m4dh0rs3.github.io/de/tags/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://m4dh0rs3.github.io/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="http://m4dh0rs3.github.io/de/tags/"
+                />
+  </url>
+  
+</urlset>

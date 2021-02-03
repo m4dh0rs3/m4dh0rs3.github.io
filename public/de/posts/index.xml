@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Benedikt Schöps</title>
+    <link>http://m4dh0rs3.github.io/de/posts/</link>
+    <description>Recent content in Posts on Benedikt Schöps</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 01 Feb 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://m4dh0rs3.github.io/de/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Lebenslauf</title>
+      <link>http://m4dh0rs3.github.io/de/posts/cv/</link>
+      <pubDate>Mon, 01 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://m4dh0rs3.github.io/de/posts/cv/</guid>
+      <description>Benedikt ist ein ambitionierter Lerner in Fächern Informatik, Mathematik und Philosophie. Er lebt derzeit in Zwickau, Deutschland und besucht die Sekundarstufe II des Clara-Wieck-Gymnasiums. Dort wurde eines seiner Projekte &amp;ldquo;Positionsbedingte Dynamiken&amp;rdquo; mit sehr gut bewertet. Sein neustes Projekt umfasst ein Computer–Algebra–System in Rust.
+Persönliche Daten  voller Name: Benedikt Daniel Schöps alias: @m4dh0rs3 geb. am 23.05.2004 in Dresden Adresse: Friedrich–Naumann Straße 21, 08064 Zwickau Planitz E-Mail: schoeps.benedikt@gmail.com Telefon: +49 178 1089818  Ausbildung  2010-2014: Grundschule &amp;ldquo;Schillerschule&amp;rdquo; Zwickau 2014-Jetzt: &amp;ldquo;Clara–Wieck–Gymnasium&amp;rdquo; Zwickau  Projekte  2020: Positionsbedingte Dynamiken, Clara-Wieck-Gymnasium Zwickau 2020: Computer–Algebra–System in Rust  Fähigkeiten  Autodidakt – privat-akademische Interessen: Mathematik, Philosophie Musiker – Klavier (nebensächlich Schlagzeug, Trompete) Entwickler – Rust, Sim, CAS (GitHub)  Sprachen  Deutsch nativ Englisch fliesend  </description>
+    </item>
+    
+    <item>
+      <title>Positionsbedingte Dynamiken</title>
+      <link>http://m4dh0rs3.github.io/de/posts/pbd/</link>
+      <pubDate>Fri, 28 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://m4dh0rs3.github.io/de/posts/pbd/</guid>
+      <description>canvas { background: white; width: 100%; height: 100%; }    load(&#34;assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm&#34;);   Betreuer: Lucas Völkel Lektoren: Jonathan Schöps, Daniel Schöps in Zwickau am Clara-Wieck-Gymnasium   „Constraints are as fundemental in game physics, as shaders are in computer graphics“ - Erin Catto
+ Inhalt  Einleitung  Hinführung zur physikalischen Simulation am Computer   Mathematische Grundlagen  Vektoren Integrale Projektion Die Ortsfunktion Kollisionserkennung – Punkt in AABB   Physikalische Grundlagen  Newtonsche Gesetze Massepunkte Bewegung des Massepunktes   Zwangsbedingungen  Einführung in Zwangsbedingungen und deren Wirkung Erzwungener Abstand Projektion in den erzwungen Abstand   Implementation  Programmaufbau und Ablauf Implementation in Lua   Auswertung Quellen  1.</description>
+    </item>
+    
+  </channel>
+</rss>
