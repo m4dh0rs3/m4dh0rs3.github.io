@@ -1,0 +1,16 @@
+<html>
+
+<p align="center">
+
+    <style>
+        canvas {
+            background: white;
+        }
+    </style>
+    <canvas id="glcanvas" tabindex='1'></canvas>
+    <!-- Minified and statically hosted version of https://github.com/not-fl3/miniquad/blob/master/native/sapp-wasm/js/gl.js -->
+    <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
+    <script>load("/target/wasm32-unknown-unknown/release/pbd-gui.wasm");</script> <!-- Your compiled wasm file -->
+</p>
+
+</html>

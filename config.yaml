@@ -1,0 +1,104 @@
+baseURL: "http://m4dh0rs3.github.io/"
+title: "Benedikt Schöps"
+# copyright: Everything is mine
+
+theme: "PaperMod"
+
+languageCode: en
+defaultLanguage: en
+
+languages:
+  en:
+    languageDirection: en
+
+  de:
+    languageDirection: de
+
+    label:
+      text: "Über"
+
+    menu:
+      main:
+        - name: Archiv
+          url: archives
+          weight: 40
+        - name: Lebenslauf
+          url: posts/cv
+          weight: 30
+        - name: Beiträge
+          url: posts
+          weight: 10
+        - name: Showerthoughts
+          url: posts/showerthoughts
+          weight: 20
+    
+    homeInfoParams:
+      title: Benedikt Schöps
+      content: >
+        Meine Webpräsenz: Lebenslauf, Projekte, Blog
+        - test
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+      
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+menu:
+  main:
+    - name: Archive
+      url: archives
+      weight: 40
+    - name: CV
+      url: posts/cv
+      weight: 30
+    - name: Posts
+      url: posts
+      weight: 10
+    - name: Showerthoughts
+      url: posts/showerthoughts
+      weight: 20
+
+params:
+  title: "Benedikt Schöps"
+  description: "My homepage: CV, Projects, Blog"
+  author: "Benedikt Schöps"
+
+  showReadingTime: true
+  showShareButtons: true
+  ShowPostNavLinks: true
+
+  ShowToc: true
+
+  label:
+    text: "About"
+
+  profileMode:
+    enabled: false
+
+  homeInfoParams:
+    title: "Benedikt Schöps"
+    content: >
+      Personal website of Benedikt Schöps: CV, Projects, Blog
+
+  socialIcons:
+    - name: GitHub
+      url: "https://github.com/m4dh0rs3"
+    - name: Twitter
+      url: "https://twitter.com/m4dh0rs3"
+    - name: Reddit
+      url: "https://reddit.com/u/m4dh0rs3"
+    - name: Discord
+      url: "https://discord.com/users/2777"
+    - name: Email
+      url: "mailto:schoeps.benedikt@gmail.com"
+
+assets:
+  favicon: "static/favicon/favicon.ico"
+  favicon16x16:  "static/favicon/favicon-16x16.png"
+  favicon32x32:  "static/favicon/favicon-32x32.png"
