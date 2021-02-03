@@ -23,7 +23,7 @@ languages:
           url: archives
           weight: 40
         - name: Lebenslauf
-          url: posts/cv
+          url: posts/resume
           weight: 30
         - name: Beiträge
           url: posts
@@ -54,8 +54,8 @@ menu:
     - name: Archive
       url: archives
       weight: 40
-    - name: CV
-      url: posts/cv
+    - name: Resume
+      url: posts/resume
       weight: 30
     - name: Posts
       url: posts

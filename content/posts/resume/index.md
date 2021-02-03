@@ -1,5 +1,5 @@
 ---
-title: "Curriculum vitae"
+title: "Resume"
 description: "CV of Benedikt Schöps"
 date: 2021-02-01
 showToc: false
