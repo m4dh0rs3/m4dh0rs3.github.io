@@ -90,9 +90,6 @@ params:
     bing:
       siteVerificationTag: "DD2B937F1E4B3638C99C63E6D8148AAE"
 
-    yandex:
-      siteVerificationTag: "8e5b78f2a1d276d3"
-
 
   ShowToc: true
 
