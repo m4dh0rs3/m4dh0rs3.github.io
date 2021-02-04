@@ -24,7 +24,7 @@ cover:
 
 - **Betreuer**: Lucas Völkel
 - **Lektoren**: Jonathan Schöps, Daniel Schöps
-- in Zwickau am _**Clara-Wieck-Gymnasium**_
+- **Komplexe Leistung** in Zwickau am _**Clara-Wieck-Gymnasium**_
 
 > _„Constraints are as fundemental in game physics, as shaders are in computer graphics“_ - **Erin Catto**
 
