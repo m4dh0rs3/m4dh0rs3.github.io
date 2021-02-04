@@ -7,6 +7,7 @@ showToc: false
 ShowBreadCrumbs: true
 cover:
    image: "assets/images/cover.png"
+   alt: "Cover"
 ---
 
 <div>

@@ -3,6 +3,7 @@ title: "Benedikt Schöps"
 # copyright: Everything is mine
 
 theme: "PaperMod"
+enableEmoji: true
 
 languageCode: en
 defaultLanguage: en
@@ -10,12 +11,15 @@ defaultLanguage: en
 languages:
   en:
     languageDirection: en
+    languageName: "English"
 
   de:
     languageDirection: de
+    languageName: "De :de:"
 
     label:
       text: "Über"
+      icon: "/android-chrome-192x192.png"
 
     menu:
       main:
@@ -33,10 +37,9 @@ languages:
         #   weight: 20
     
     homeInfoParams:
-      title: Benedikt Schöps
+      title: "Hallo, ich bin Benedikt 👋"
       content: >
-        Meine Webpräsenz: Lebenslauf, Projekte, Blog
-        - test
+        Das ist meine Webpräsenz: Lebenslauf, Projekte, Blog
 
 outputs:
   home:
@@ -52,15 +55,19 @@ markup:
 menu:
   main:
     - name: Archive
+      identifier: archive
       url: archives
       weight: 40
     - name: Resume
+      identifier: resume
       url: posts/resume
       weight: 30
     - name: Posts
+      identifier: posts
       url: posts
       weight: 10
     - name: Showerthoughts
+      identifier: showerthoughts
       url: posts/showerthoughts
       weight: 20
 
@@ -69,22 +76,41 @@ params:
   description: "My homepage: CV, Projects, Blog"
   author: "Benedikt Schöps"
 
+  env: production
+
   showReadingTime: true
   showShareButtons: true
-  ShowPostNavLinks: true
+  showPostNavLinks: true
+  showBreadCrumbs: true
+
+  analytics:
+    google:
+      siteVerificationTag: "IunKnnqktWMt_-io_r7ydtnQqsdIvPFD9npvF-a-EeM"
+
+    bing:
+      siteVerificationTag: "DD2B937F1E4B3638C99C63E6D8148AAE"
+
+    yandex:
+      siteVerificationTag: "8e5b78f2a1d276d3"
+
 
   ShowToc: true
 
   label:
     text: "About"
+    icon: "/android-chrome-192x192.png"
+
+  cover:
+    linkFullImages: false
+    responsiveImages: false
 
   profileMode:
     enabled: false
 
   homeInfoParams:
-    title: "Benedikt Schöps"
+    title: "Hi, I'm Benedikt 👋"
     content: >
-      Personal website of Benedikt Schöps: CV, Projects, Blog
+      This is my homepage: CV, Projects, Blog
 
   socialIcons:
     - name: GitHub
