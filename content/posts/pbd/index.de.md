@@ -25,7 +25,7 @@ cover:
     </style>
    <canvas id="glcanvas" tabindex='1'></canvas>
    <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
-   <script>load("assets/canvas/pbd-gui.wasm");</script>
+   <script>load("assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm");</script>
 </div>
 
 - **Betreuer**: Lucas Völkel
