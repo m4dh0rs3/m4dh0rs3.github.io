@@ -21,8 +21,12 @@
     {{- partialCached "footer.html" . .Type .Layout .Params }}
 </body>
 
-{{ if or .Params.math .Site.Params.math }}
+{{ if or .Params.math }}
 {{ partial "math.html" . }}
+{{ end }}
+
+{{ if (.Params.mermaid) }}
+<script async src="https://unpkg.com/mermaid@8.2.3/dist/mermaid.min.js"></script>
 {{ end }}
 
 </html>

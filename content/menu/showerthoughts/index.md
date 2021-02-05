@@ -2,6 +2,7 @@
 title: "Showerthoughts"
 date: 2020-02-02
 showToc: false
+hideMeta: true
 ---
 
 > These are thoughts, not necessarily truths. Because of their short forms, many interpretations don't hold. I don't believe in an essence of such a complex reality, but I like finding it.

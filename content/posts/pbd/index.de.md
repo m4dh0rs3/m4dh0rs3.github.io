@@ -5,10 +5,13 @@ date: 2020-02-28
 math: true
 showToc: false
 ShowBreadCrumbs: true
+summary: "Lassen sich mit Hilfe des Computers einfachere Modelle der physikalischen Simulation aufstellen, welche mehr Rechenzeit benötigen, die uns aber der Computer abnimmt"
 cover:
    image: "assets/images/cover.png"
    alt: "Cover"
 ---
+
+> Beachte: Die folgende Arbeit wurde für Schüler aud dem Level des letzen Jahr der Sekundarstufe I geschrieben.
 
 <div>
    <style>
@@ -16,6 +19,8 @@ cover:
          background: white;
          width: 100%;
          height: 100%;
+         border: 2px solid #a6a6a6;
+         border-radius: 5px;
       }
     </style>
    <canvas id="glcanvas" tabindex='1'></canvas>
@@ -83,9 +88,13 @@ Variablen, die Vektoren tragen werden oft, wie auch in dieser Arbeit, ein Pfeil 
 
 Für Addition, Multiplikation und deren Inversion zwischen zwei Vektoren gilt:
 
+<p>
 $$\vec a + \vec b = (a_1 + b_1, a_2 + b_2, \dots, a_{i-1} + b_{i-1}, a_i + b_i)$$
+</p>
 
+<p>
 $$\vec a * \vec b = (a_1 * b_1, a_2 * b_2, \dots, a_{i-1} * b_{i-1}, a_i * b_i)$$
+</p>
 
 <img src="assets/images/vektor-add.png" alt="M3" style="width: 30%; float: right;"/>
 
@@ -93,7 +102,9 @@ Es wird komponentenweise addiert, subtrahiert, multipliziert und dividiert. **M3
 
 Für die Multiplikation zwischen einem Vektor und einer reellen Zahl („Skalierung“) $\vec v; n$ gilt:
 
+<p>
 $$n * \vec v = (n * v_1, n * v_2, \dots, n * v_{i-1}, v * v_i)$$
+</p>
 
 Es wird wieder komponentenweise multipliziert oder dividiert.
 
@@ -159,7 +170,9 @@ Die Ortsfunktion $\vec x(t)$ gibt eine Position $\vec x_t$ über die Zeit $t$ an
 
 Wenn sich aber die Geschwindigkeit über die Zeit auch ändert, beispielsweise durch die Funktion $\vec v(t)$ beschrieben, dann müsste man jede einzelne Geschwindigkeit in Relationzum Zeitschritt aufaddieren. Daraus ergäbe sich dieses fraktale, also aus sich selbst bestehendes Muster:
 
+<p>
 $$
+\small{
 \vec x(t) = \underbrace{
    \underbrace{
       \vec v(\frac{0}{1} * \delta t) * \frac{\delta t}{1}}_{
@@ -207,7 +220,9 @@ $$
             }
       }
 }_{t}
+}
 $$
+</p>
 
 Diese Gleichung faltet sich weiter auf bis zu einem infinitesimalen Zeitschritt. Also die nächst größer reelle Zahl über Null. Die Lösung der Ortsfunktion wird in 3.3 Bewegung des Massepunktes beschrieben.
 
@@ -261,6 +276,7 @@ eine ununterbrochene Funktion nach Zeit, die nicht immer nur konstant ist.
 So ist die Position $\vec x$ die Summe aller vorherigen Geschwindigkeiten mal $\epsilon$ (die
 Infinitesimale), beziehungsweiße $dt$. Somit gilt $\vec x(t) = \int_0^t{\vec v(t) * dt}$, $\vec x(t) = \int_0^t{(\int_0^t{\vec f * w * dt}) * dt}$. Für eine fortlaufende Simulation mit gegebenen einwirkenden Kräfte $\vec f$, sowie eventueller Startposition- und Geschwindigkeit $\vec x_0$ $\vec v_0$ und Schrittgröße $\delta t$ muss in jedem Zeitschritt allerdings nur folgendes berechnet werden (Eulersche Methode):
 
+<p>
 $$
 \begin{aligned}
    t &= t + \delta t \\
@@ -268,9 +284,11 @@ $$
    \vec x &= \vec x + \vec v * \delta t
 \end{aligned}
 $$
+</p>
 
 Es gibt auch andere Möglichkeiten die fortlaufende Bewegung zu berechnen indem man zum Beispiel anders integriert. Eine zweite Methode wäre die Verlet Integration. Diese wird auch in der Implementation der Simulation genutzt, weil dann die Projektion der Zwangsbedingungen einfach einzubauen ist, da Positionen direkt manipuliert werden und nicht Geschwindigkeiten. Zunächst ist auch gleiches wie oben zu wissen. Dann wird fortlaufend folgendes berechnet:
 
+<p>
 $$
 \begin{aligned}
    t &= t * \delta t \\
@@ -280,6 +298,7 @@ $$
    \vec x &= \vec p
 \end{aligned}
 $$
+</p>
 
 ```Lua
 t = t + dt
@@ -340,19 +359,23 @@ So kann man die Constraint als $C(\vec a, \vec b) = (|\vec a - \vec b| - d) * k$
 
 Nun gilt es diese Funktion auf die Position der beiden Massepunkte zu projizieren.Die Position der Punkte soll so verändert werden, dass die Bedingung erfüllt ist. DieRichtung, also der Vektor $\vec r$ der von Punkt $\vec a$ zu $\vec b$ zeigt, lässt sich aus der Differenzzwischen den beiden Punkten berechnen: $\vec a - \vec b$. Dieser Vektor muss nun normalisiertwerden damit die Länge 1 ist. Dazu wird $\vec r$ von der Vektorlänge dividiert. Zusammengesetzt sie das so aus: $\frac{\vec a - \vec b}{|\vec a - \vec b|}$. Das bildet den Strahl, entlang welchem die Punkte verschoben werden müssen, um sie in den geltenden Funktionsbereich zu projizieren. Die Stärke der Verschiebung, sprich die ehemalige Vektorlänge, ist der Wert der Funktion der Zwangsbedingung. Der erste Massepunkt muss entgegengesetzt zum Zweiten verschoben werden. Somit entsteht die Verschiebung von $\vec a$ und negativ die gleiche für $\vec b$:
 
+<p>
 $$\delta \vec a = k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|}$$
+</p>
 
 Da beide Punkte Massepunkte sind, also auch eine Masse haben, soll diese in die Gleichung so einfliesen, dass die beidseitige Verschiebung im Masseverhältnis gewichtet ist. Dazu muss der Anteil des Massepunkte an der Gesamtmasse berechnet werden. Das geschieht für $a$ mit $\frac{w_a}{w_a + w_b}$ beziehungsweise
 $\frac{w_b}{w_a + w_b}$ für $b$. Somit lässt sich eine Distance Constraint folgendermaßen projizieren[^12]:
 
 <img src="assets/images/constraint-projection.png" alt="M8" style="width: 50%; float: right;"/>
 
+<p>
 $$
 \begin{aligned}
    \delta \vec a &= \frac{w_a}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|} \\
    \delta \vec b &= - \frac{w_b}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|}
 \end{aligned}
 $$
+</p>
 
 Die Projektion der Punkte in Lua. Wiederholende Werte wie die Vektordifferenz oder die Länge werden extra zwischengespeichert:
 
@@ -394,12 +417,14 @@ Der Ablauf des Programms sieht folgendermaßen aus[^12]:
 4. Für jede Constraint $C$ mit Stelle $i$ $j$:
    1. projiziere Constraint:
 
+</p>
 $$
 \begin{aligned}
     \vec a &= \vec a + \frac{w_a}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|} \\
    \vec b &= \vec b - \frac{w_b}{w_a + w_b} * k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a - \vec b|}
 \end{aligned}
 $$
+</p>
 
 5. Für jeden Massepunkt bei $i$:
    1. akquiriere Geschwindigkeit: $\vec v = (\vec p - \vec x) \div \delta t$

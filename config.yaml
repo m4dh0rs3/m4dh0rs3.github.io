@@ -27,14 +27,14 @@ languages:
           url: archives
           weight: 40
         - name: Lebenslauf
-          url: posts/resume
+          url: menu/resume
           weight: 30
         - name: Beiträge
           url: posts
           weight: 10
-        # - name: Showerthoughts
-        #   url: posts/showerthoughts
-        #   weight: 20
+        - name: Showerthoughts
+          url: menu/showerthoughts
+          weight: 20
     
     homeInfoParams:
       title: "Hallo, ich bin Benedikt 👋"
@@ -60,7 +60,7 @@ menu:
       weight: 40
     - name: Resume
       identifier: resume
-      url: posts/resume
+      url: menu/resume
       weight: 30
     - name: Posts
       identifier: posts
@@ -68,7 +68,7 @@ menu:
       weight: 10
     - name: Showerthoughts
       identifier: showerthoughts
-      url: posts/showerthoughts
+      url: menu/showerthoughts
       weight: 20
 
 params:
