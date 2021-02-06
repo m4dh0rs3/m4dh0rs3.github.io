@@ -366,7 +366,7 @@ $$\delta \vec a = k * (|\vec a - \vec b| - d) * \frac{\vec a - \vec b}{|\vec a -
 Da beide Punkte Massepunkte sind, also auch eine Masse haben, soll diese in die Gleichung so einfliesen, dass die beidseitige Verschiebung im Masseverhältnis gewichtet ist. Dazu muss der Anteil des Massepunkte an der Gesamtmasse berechnet werden. Das geschieht für $a$ mit $\frac{w_a}{w_a + w_b}$ beziehungsweise
 $\frac{w_b}{w_a + w_b}$ für $b$. Somit lässt sich eine Distance Constraint folgendermaßen projizieren[^12]:
 
-<img src="assets/images/constraint-projection.png" alt="M8" style="width: 50%; float: right;"/>
+<img src="assets/images/constraint-projection.png" alt="M8" style="width: 40%; float: right;"/>
 
 <p>
 $$
