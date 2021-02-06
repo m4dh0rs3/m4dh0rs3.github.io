@@ -79,6 +79,7 @@ In der Mathematik und Physik sind Vektoren grundlegende Elemente von Gleichungen
 <img src="assets/images/vektor.png" alt="M2" style="width: 40%; float: right;"/>
 
 Ein Vektor besitzt:
+
 - Richtung $\alpha$
 - Länge $r$
 
