@@ -32,9 +32,9 @@ languages:
         - name: Beiträge
           url: posts
           weight: 10
-        - name: Showerthoughts
-          url: menu/showerthoughts
-          weight: 20
+        # - name: Showerthoughts
+          # url: menu/showerthoughts
+          # weight: 20
     
     homeInfoParams:
       title: "Hallo, ich bin Benedikt 👋"
@@ -66,10 +66,10 @@ menu:
       identifier: posts
       url: posts
       weight: 10
-    - name: Showerthoughts
-      identifier: showerthoughts
-      url: menu/showerthoughts
-      weight: 20
+    # - name: Showerthoughts
+      # identifier: showerthoughts
+      # url: menu/showerthoughts
+      # weight: 20
 
 params:
   title: "Benedikt Schöps"

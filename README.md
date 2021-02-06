@@ -10,6 +10,8 @@ Clone recursive submodules:
 
 ```Bash
 git clone --recurse-submodules https://github.com/m4dh0rs3/m4dh0rs3.github.io.git
+git submodule init
+git submodule update
 ```
 
 Check results
