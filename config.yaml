@@ -26,9 +26,9 @@ languages:
         - name: Archiv
           url: archives
           weight: 40
-        - name: Über
-          url: menu/resume
-          weight: 30
+        # - name: Über
+          # url: menu/resume
+          # weight: 30
         - name: Beiträge
           url: posts
           weight: 10
@@ -38,8 +38,7 @@ languages:
     
     homeInfoParams:
       title: "Hallo, ich bin Benedikt 👋"
-      content: >
-        Das ist meine Webpräsenz: Lebenslauf, Projekte, Blog
+      content: "Das ist meine Webpräsenz: Projekte, Blog, Lebenslauf"
 
 outputs:
   home:
@@ -58,10 +57,10 @@ menu:
       identifier: archive
       url: archives
       weight: 40
-    - name: About
-      identifier: resume
-      url: menu/resume
-      weight: 30
+    # - name: About
+      # identifier: resume
+      # url: menu/resume
+      # weight: 30
     - name: Posts
       identifier: posts
       url: posts
@@ -73,7 +72,7 @@ menu:
 
 params:
   title: "Benedikt Schöps"
-  description: "My homepage: CV, Projects, Blog"
+  description: "My homepage: Projects, Blog, Resume"
   author: "Benedikt Schöps"
 
   env: production
