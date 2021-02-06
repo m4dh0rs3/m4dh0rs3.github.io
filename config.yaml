@@ -98,7 +98,7 @@ params:
 
   cover:
     linkFullImages: false
-    responsiveImages: false
+    responsiveImages: true
 
   profileMode:
     enabled: false
