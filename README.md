@@ -24,4 +24,4 @@ Commit & push, than:
 
 ```Bash
 bash deploy.sh
-```
+``` 

@@ -26,7 +26,7 @@ languages:
         - name: Archiv
           url: archives
           weight: 40
-        - name: Lebenslauf
+        - name: Über
           url: menu/resume
           weight: 30
         - name: Beiträge
@@ -58,7 +58,7 @@ menu:
       identifier: archive
       url: archives
       weight: 40
-    - name: Resume
+    - name: About
       identifier: resume
       url: menu/resume
       weight: 30
