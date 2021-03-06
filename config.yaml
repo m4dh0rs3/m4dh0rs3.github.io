@@ -26,9 +26,9 @@ languages:
         - name: Archiv
           url: archives
           weight: 40
-        # - name: Über
-          # url: menu/resume
-          # weight: 30
+        - name: Über
+          url: menu/resume
+          weight: 30
         - name: Beiträge
           url: posts
           weight: 10
@@ -57,10 +57,10 @@ menu:
       identifier: archive
       url: archives
       weight: 40
-    # - name: About
-      # identifier: resume
-      # url: menu/resume
-      # weight: 30
+    - name: About
+      identifier: resume
+      url: menu/resume
+      weight: 30
     - name: Posts
       identifier: posts
       url: posts
@@ -74,6 +74,8 @@ params:
   title: "Benedikt Schöps"
   description: "My homepage: Projects, Blog, Resume"
   author: "Benedikt Schöps"
+
+  defaultTheme: light
 
   env: production
 
