@@ -117,12 +117,7 @@ Es gibt viele weitere Operationen und Eigenschaften, erwähnenswert sind noch:
 
 In der Informatik wird ein Vektor viel mehr als Liste geordneter Zahlen verstanden,frei von einer direkten Zuordnung als Position oder Beschleunigung fasst er Eigenschafteneines Objektes oder mehrere Werte einer Eigenschaft zusammen. Ein Vektor in Lua:
 
-```Lua
-v = { x = -3, y = 7}
-w = { x = 9, y = -1 }
-
-k = { x = v.x + w.x, y = v.y + w.y}
-```
+<script src="https://gist.github.com/m4dh0rs3/cbcfd0a70709f0baabada9bad8f2010b.js"></script>
 
 > _**Definition**_: Ein Vektor $\vec v = (v_1, v_2, \dots, v_{i-1}, v_i)$ ist ein mathematisches Objekt, welches eine Verschiebung im Raum beschreibt. Die Anzahl $n$ der Komponenten wird als Vektor $n$-ter Dimension bezeichnet. Dargestellt wird er in einer Variable mit aufgesetztem Pfeil, die eine Tupel (also eine endliche Liste) geordneter, reeller Zahlen enthält. Geometrisch veranschaulicht wird der Vektor mit Hilfe eines Pfeiles, welcher vom Koordinatenursprung zum Punkt des Vektors zeigt. Die Evaluierung von Operatoren zwischen Vektoren wird komponentenweise abhängig vom zugeordneten Index oder Bezeichnung ausgeführt, soweit diese vorhanden ist.
 
@@ -136,17 +131,7 @@ Um den (bestimmten) Integral zu berechnen, unterteilt man die Fläche in Streife
 
 Berechnung des Integrals in Lua:
 
-```Lua
-function integral(fn, a, b, dt)
-   local A = 0
-
-   for x = a, b, dt do
-      local y = fn(x)
-
-      A = A + y * dt
-   end
-end
-```
+<script src="https://gist.github.com/m4dh0rs3/0ef06b6d51fe378009ee10e6e6532e5a.js"></script>
 
 > _**Definition**_: Der Integral $\int_{a}^{b}{f(x) * dx}$ ordnet einer Funktion ihre grundlegende Fläche zu. Er wird aus der Summe aller Rechtecke ($f(x) * dx$) der Höhe von jeweils dem Funktionswert aus jeder reellen Zahl in $[a, b]$ und Breite der Veränderung $dx$ zweier aufeinander folgenden Argumente gebildet. Da unendliche viele reelle Zahlen zwischen $a$ und $b$ liegen, muss der Integral approximiert werden, indem die Menge der Zahlen auf endlich reduziert wird. Das heißt $x \in \{\N * dx \mid a \leq x \leq b\}$ anstatt $x \in [a, b]$. Mit $dx \to 0$ und $n = \frac{b - a}{dx}$ gilt: $\int_a^b{f(x)*dx} = \lim_{n \to \inf}{\sum_{k=0}^n{f(a + dx * k) * dx}}$. Somit ist der Integral eine Grenzwertfunktion.
 
@@ -160,11 +145,7 @@ Ein einfaches mathematisches Beispiel ist 1-Dimensionale Projektion in zwei vers
 
 Projektion in den zweiten 1-dimensionalen Wertebereich in Lua:
 
-```Lua
-function remap(x, a, b, c, d)
-   return x / (b - a) * (d - c) + c
-end
-```
+<script src="https://gist.github.com/m4dh0rs3/ff97e29aa4ffccd5d805a273f979f5ab.js"></script>
 
 ### 2.4 Die Ortsfunktion[^3] [^7]
 
@@ -236,11 +217,7 @@ Diese Gleichung faltet sich weiter auf bis zu einem infinitesimalen Zeitschritt.
 
 AABB-Check in Lua:
 
-```Lua
-if (k <= x and x <= k + w) and (l <= y and y <= l + h) then
-   -- (x, y) ist in AABB
-end
-```
+<script src="https://gist.github.com/m4dh0rs3/d880db905a337f78a96b7ee47a46c2d8.js"></script>
 
 ## 3. Physikalische Grundlagen
 
@@ -302,21 +279,7 @@ $$
 $$
 </p>
 
-```Lua
-t = t + dt
-
-vx = vx + fx * dt
-vy = vy + fy * dt
-
-px = x + vx * dt
-py = y + vy * dt
-
-vx = (px - x) / dt
-vy = (py - y) / dt
-
-x = px
-y = py
-```
+<script src="https://gist.github.com/m4dh0rs3/91015a0bf9baa38a17a30084511510d2.js"></script>
 
 Der Vorteil dieser Methode ist, dass wenn $\vec p$ durch die Projektion der Zwangsbedingungen manipuliert wird, verändert sich auch $\vec v$ daher kommt der Name _„Positions bedingte Dynamiken“_.
 
@@ -381,21 +344,7 @@ $$
 
 Die Projektion der Punkte in Lua. Wiederholende Werte wie die Vektordifferenz oder die Länge werden extra zwischengespeichert:
 
-```Lua
-dx = i.px - j.px
-dy = i.py - j.py
-
-l = (dx^2 + dy^2)^.5
-
-ox = (l - d) * (dx / l)
-oy = (l - d) * (dy / l)
-
-i.px = i.px + ((i.w / (i.w + j.w) * ox) * k)
-i.px = i.px + ((i.w / (i.w + j.w) * oy) * k)
-
-i.px = i.px - ((j.w / (i.w + j.w) * ox) * k)
-i.px = i.px - ((j.w / (i.w + j.w) * oy) * k)
-```
+<script src="https://gist.github.com/m4dh0rs3/c3ee4e94a9b52fb3f597fd66a83bbbee.js"></script>
 
 ## 5. Implementation
 
