@@ -44,7 +44,7 @@ params:
 
   cover:
     linkFullImages: false
-    # responsiveImages: true
+    responsiveImages: true
 
   socialIcons:
     - name: "GitHub"
