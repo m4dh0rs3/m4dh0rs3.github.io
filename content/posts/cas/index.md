@@ -1,9 +1,9 @@
 ---
 title: "Computer–algebra–system in Rust"
+date: 2020-03-06
+summary: "How does a computer translate complex, symbol heavy expressions to simple machine code instructions?"
 math: true
 mermaid: true
-summary: "How does a computer translate complex, symbol heavy expressions to simple machine code instructions?"
-draft: true
 ---
 
 Modern calculators automate most of the generic maths, even bridge to computing. Even though on the hardware level, they are just computers, operating in binary arithmetics, they can

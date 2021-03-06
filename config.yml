@@ -1,0 +1,126 @@
+baseURL: "http://m4dh0rs3.github.io/"
+title: "Benedikt Schöps"
+
+theme: "PaperMod"
+enableEmoji: true
+
+params:
+  title: "Benedikt Schöps"
+  description: "My homepage: Projects, Blog, Resume"
+  author: "Benedikt Schöps"
+
+  env: "production"
+
+  profileMode:
+    enabled: true
+    title: "Hey, my name is Benedikt 👋"
+    subtitle: "I am an ambitious learner, focusing on computer science, mathematics and philosophy."
+    imageUrl: "https://pbs.twimg.com/profile_images/1368141707955601408/O4ArvgAl_400x400.jpg"
+    imageTitle: "Profilepicture of Benedikt on Twitter"
+
+  defaultTheme: "light"
+
+  showReadingTime: true
+  showSahreButtons: true
+  showPostNavLinks: true
+  showBreadCrumbs: true
+  showToc: true
+
+  label:
+    text: "About"
+    icon: "/android-chrome-192x192.png"
+
+  cover:
+    linkFullImages: false
+    # responsiveImages: true
+
+  socialIcons:
+    - name: "GitHub"
+      url: "https://github.com/m4dh0rs3/"
+    - name: "Twitter"
+      url: "https://twitter.com/m4dh0rs3/" 
+    - name: "Reddit"
+      url: "https://reddit.com/u/m4dh0rs3/"
+    - name: "Discord"
+      url: "https://discord.com/users/2777/"
+    - name: "Email"
+      url: "mailto:schoeps.benedikt@gmail.com"
+
+  analytics:
+    google:
+      siteVerificationTag: "IunKnnqktWMt_-io_r7ydtnQqsdIvPFD9npvF-a-EeM"
+
+    bing:
+      siteVerificationTag: "DD2B937F1E4B3638C99C63E6D8148AAE"
+
+menu:
+  main:
+    - name: "Posts"
+      identifier: "posts"
+      url: "posts"
+      weight: 10
+
+    - name: "About"
+      identifier: "resume"
+      url: menu/resume
+      weight: 20
+
+    - name: "Archives"
+      identifier: "archives"
+      url: "archives"
+      weight: 30
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+minify:
+    disableXML: true
+    minifyOutput: true
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+languageCode: "en"
+defaultLanguage: "en"
+
+languages:
+  en:
+    languageDirection: "en"
+    languageName: "English"
+
+  de:
+    languageDirection: "de"
+    languageName: "Deutsch" # Add Emoji flag?
+
+    label:
+      text: "Über"
+      icon: "/android-chrome-192x192.png"
+
+    profileMode:
+      enabled: true
+      title: "Hey, mein Name ist Benedikt 👋"
+      subtitle: "Ich bin ein ambitionierter Lerner in Fächern Informatik, Mathematik und Philosophie."
+      imageUrl: "https://pbs.twimg.com/profile_images/1368141707955601408/O4ArvgAl_400x400.jpg"
+      imageTitle: "Profilbild von Benedikt auf Twitter"
+    
+    menu:
+      main:
+        - name: "Beiträge"
+          identifier: "posts"
+          url: "posts"
+          weight: 10
+
+        - name: "Über"
+          identifier: "resume"
+          url: menu/resume
+          weight: 20
+
+        - name: "Archiv"
+          identifier: "archives"
+          url: "archives"
+          weight: 30

@@ -1,17 +1,15 @@
 ---
 title: "Positionsbedingte Dynamiken"
-description: ""
+summary: "Lassen sich mit Hilfe des Computers einfachere Modelle der physikalischen Simulation aufstellen, welche mehr Rechenzeit benötigen, die uns aber der Computer abnimmt?"
 date: 2020-02-28
+showToC: false
 math: true
-showToc: false
-ShowBreadCrumbs: true
-summary: "Lassen sich mit Hilfe des Computers einfachere Modelle der physikalischen Simulation aufstellen, welche mehr Rechenzeit benötigen, die uns aber der Computer abnimmt"
 cover:
    image: "assets/images/cover.png"
-   alt: "Cover"
+   alt: "Cover eines Schwans im Wireframe–Model"
 ---
 
-> Beachte: Die folgende Arbeit wurde für Schüler aud dem Level des letzen Jahr der Sekundarstufe I geschrieben.
+> Beachte: Die folgende Arbeit wurde für Schüler aus dem Level des letzen Jahr der Sekundarstufe I geschrieben.
 
 <div>
    <style>
@@ -36,27 +34,30 @@ cover:
 
 # Inhalt
 
-1. [Einleitung](#1-einleitung)
-   1. [Hinführung zur physikalischen Simulation am Computer](#11-hinführung-zur-physikalischen-simulation-am-computer)
-2. [Mathematische Grundlagen](#2-mathematische-grundlagen)
-   1. [Vektoren](#21-vektoren1-2)
-   2. [Integrale](#22-integrale1-2)
-   3. [Projektion](#23-projektion1)
-   4. [Die Ortsfunktion](#24-die-ortsfunktion3-7)
-   5. [Kollisionserkennung – Punkt in AABB](#25-kollisionserkennung--punkt-in-aabb5)
-3. [Physikalische Grundlagen](#3-physikalische-grundlagen)
-   1. [Newtonsche Gesetze](#31-newtonsche-gesetze)
-   2. [Massepunkte](#32-massepunkte)
-   3. [Bewegung des Massepunktes](#33-bewegung-des-massepunktes3)
-4. [Zwangsbedingungen](#4-zwangsbedingungen)
-   1. [Einführung in Zwangsbedingungen und deren Wirkung](#41-einführung-in-zwangsbedingungen-und-deren-wirkung)
-   2. [Erzwungener Abstand](#42-erzwungener-abstand)
-   3. [Projektion in den erzwungen Abstand](#43-projektion-in-den-erzwungenen-abstand)
-5. [Implementation](#5-implementation)
-   1. [Programmaufbau und Ablauf](#51-programmaufbau-und-ablauf)
-   2. [Implementation in Lua](#52-implementation-in-lua)
-6. [Auswertung](#6-auswertung)
-7. [Quellen](#7-quellen)
+- [Inhalt](#inhalt)
+  - [1. Einleitung](#1-einleitung)
+    - [1.1 Hinführung zur physikalischen Simulation am Computer](#11-hinführung-zur-physikalischen-simulation-am-computer)
+  - [2. Mathematische Grundlagen](#2-mathematische-grundlagen)
+    - [2.1 Vektoren[^1] [^2]](#21-vektoren1-2)
+    - [2.2 Integrale[^1] [^2]](#22-integrale1-2)
+    - [2.3 Projektion[^1]](#23-projektion1)
+    - [2.4 Die Ortsfunktion[^3] [^7]](#24-die-ortsfunktion3-7)
+    - [2.5 Kollisionserkennung – Punkt in AABB[^5]](#25-kollisionserkennung--punkt-in-aabb5)
+  - [3. Physikalische Grundlagen](#3-physikalische-grundlagen)
+    - [3.1 Newtonsche Gesetze](#31-newtonsche-gesetze)
+    - [3.2 Massepunkte](#32-massepunkte)
+    - [3.3 Bewegung des Massepunktes[^3]](#33-bewegung-des-massepunktes3)
+  - [4. Zwangsbedingungen](#4-zwangsbedingungen)
+    - [4.1 Einführung in Zwangsbedingungen und deren Wirkung](#41-einführung-in-zwangsbedingungen-und-deren-wirkung)
+    - [4.2 Erzwungener Abstand](#42-erzwungener-abstand)
+    - [4.3 Projektion in den erzwungenen Abstand](#43-projektion-in-den-erzwungenen-abstand)
+  - [5. Implementation](#5-implementation)
+    - [5.1 Programmaufbau und Ablauf](#51-programmaufbau-und-ablauf)
+    - [5.2 Implementation in Lua](#52-implementation-in-lua)
+  - [6. Auswertung](#6-auswertung)
+- [7. Quellen](#7-quellen)
+  - [7.1 Bilder _M_](#71-bilder-m)
+  - [7.2 Referenzen _B_ und Entnommen _E_](#72-referenzen-b-und-entnommen-e)
 
 ## 1. Einleitung
 
