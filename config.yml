@@ -4,6 +4,8 @@ title: "Benedikt Schöps"
 theme: "PaperMod"
 enableEmoji: true
 
+enableRobotsTXT: true
+
 params:
   title: "Benedikt Schöps"
   description: "My homepage: Projects, Blog, Resume"
@@ -24,7 +26,7 @@ params:
     buttons:
       - name: "PBD"
         url: "https://github.com/m4dh0rs3/pbd/"
-        
+
       - name: "CAS"
         url: "https://github.com/m4dh0rs3/cas/"
 
