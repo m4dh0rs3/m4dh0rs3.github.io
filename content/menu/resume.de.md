@@ -7,6 +7,9 @@ date: 2021-03-06
 
 Benedikt ist ein ambitionierter Lerner in Fächern Informatik, Mathematik und Philosophie. Er lebt derzeit in _Zwickau, Deutschland_ und besucht die Sekundarstufe II des _Clara-Wieck-Gymnasiums_. Dort wurde eines seiner Projekte ["Positionsbedingte Dynamiken"](https://github.com/m4dh0rs3/PBD) mit _sehr gut_ bewertet. Sein letztes Projekt umfasst ein [Computer–Algebra–System](https://github.com/m4dh0rs3/cas) in [Rust](https://rust-lang.com).
 
+![](https://github-readme-stats.vercel.app/api?username=m4dh0rs3&count_private=true&show_icons=true&hide=prs,issues,contribs&include_all_commits=true&theme=flag-india&locale=de)
+
+![](https://github-readme-stats.vercel.app/api/top-langs/?username=m4dh0rs3&layout=compact&theme=graywhite&locale=de)
 ### Projekte
 
 - `2020`: [Positionsbedingte Dynamiken](https://github.com/m4dh0rs3/PBD), _Clara-Wieck-Gymnasium Zwickau_
