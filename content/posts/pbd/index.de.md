@@ -22,7 +22,7 @@ cover:
       }
     </style>
    <canvas id="glcanvas" tabindex='1'></canvas>
-   <script src="https://not-fl3.github.io/miniquad-samples/gl.js"></script>
+   <script src="https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js"></script>
    <script>load("assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm");</script>
 </div>
 
