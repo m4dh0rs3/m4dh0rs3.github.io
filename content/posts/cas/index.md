@@ -163,11 +163,10 @@ Symbols can have indefinite length, the lexer can step until either the expressi
 
 Numbers are more complicated, because they can also contain a decimal and an power extension, with a minus sign. These are treated all optional.
 
-### Parser
 
-## Evaluate
-
-### Environment
+### Parser [TODO]
+## Evaluate [TODO]
+### Environment [TODO]
 
 [^1]: If the separation operator really has higher precedency than a comparison is debatable. Note that a tuple normally comes with parenthesis, which delimit the expression, not needing any precedence.
 

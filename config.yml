@@ -14,8 +14,13 @@ params:
 
   env: "production"
 
+  homeInfoParams:
+    title: "Hey, my name is Benedikt 👋"
+    content: "I am an ambitious learner, focusing on computer science, mathematics and philosophy."
+
+
   profileMode:
-    enabled: true
+    enabled: false
 
     title: "Hey, my name is Benedikt 👋"
     subtitle: "I am an ambitious learner, focusing on computer science, mathematics and philosophy."
@@ -117,8 +122,12 @@ languages:
       text: "Über"
       icon: "/android-chrome-192x192.png"
 
+    homeInfoParams:
+      title: "Hey, mein Name ist Benedikt 👋"
+      content: "Ich bin ein ambitionierter Lerner in Fächern Informatik, Mathematik und Philosophie."
+
     profileMode:
-      enabled: true
+      enabled: false
 
       title: "Hey, mein Name ist Benedikt 👋"
       subtitle: "Ich bin ein ambitionierter Lerner in Fächern Informatik, Mathematik und Philosophie."
