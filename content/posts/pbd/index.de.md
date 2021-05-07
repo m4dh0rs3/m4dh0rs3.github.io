@@ -11,21 +11,6 @@ cover:
 
 > Beachte: Die folgende Arbeit wurde für Schüler aus dem Level des letzen Jahr der Sekundarstufe I geschrieben.
 
-<div>
-   <style>
-      canvas {
-         background: white;
-         width: 100%;
-         height: 100%;
-         border: 2px solid #a6a6a6;
-         border-radius: 5px;
-      }
-    </style>
-   <canvas id="glcanvas" tabindex='1'></canvas>
-   <script src="https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js"></script>
-   <script>load("assets/canvas/target/wasm32-unknown-unknown/release/pbd-gui.wasm");</script>
-</div>
-
 - **Betreuer**: Lucas Völkel
 - **Lektoren**: Jonathan Schöps, Daniel Schöps
 - **Komplexe Leistung** in Zwickau am _**Clara-Wieck-Gymnasium**_
