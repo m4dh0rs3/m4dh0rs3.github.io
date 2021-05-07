@@ -2,7 +2,8 @@
 title: "Lebenslauf"
 summary: "Lebenslauf von Benedikt Schöps"
 showToc: false
-date: 2021-03-06
+showReadingTime: false
+#date: 2021-03-06
 ---
 
 Benedikt ist ein ambitionierter Lerner in Fächern Informatik, Mathematik und Philosophie. Er lebt derzeit in _Zwickau, Deutschland_ und besucht die Sekundarstufe II des _Clara-Wieck-Gymnasiums_. Dort wurde eines seiner Projekte ["Positionsbedingte Dynamiken"](https://github.com/m4dh0rs3/PBD) mit _sehr gut_ bewertet. Sein letztes Projekt umfasst ein [Computer–Algebra–System](https://github.com/m4dh0rs3/cas) in [Rust](https://rust-lang.com).
@@ -23,7 +24,7 @@ Benedikt ist ein ambitionierter Lerner in Fächern Informatik, Mathematik und Ph
 
 ### Sprachen
 
-- Deutsch nativ
-- Englisch fliesend
+- [X] Deutsch nativ
+- [X] Englisch fliesend
 
 ### [Schreib mich an für mehr Infos!](mailto:schoeps.benedikt@gmail.com)
