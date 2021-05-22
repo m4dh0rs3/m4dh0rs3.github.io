@@ -1,4 +1,0 @@
----
-title: "Archiv"
-layout: "archives"
----

@@ -1,32 +1,54 @@
-## Build info
+<p align="center">
+  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter">
+    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
+  </a>
+</p>
+<h1 align="center">
+  Gatsby minimal starter
+</h1>
 
-Clone recursive submodules:
+## 🚀 Quick start
 
-```Bash
-git clone --recurse-submodules https://github.com/m4dh0rs3/m4dh0rs3.github.io.git
-git submodule init
-git submodule update
-git submodule update --init --recursive # needed when you reclone your repo (submodules may not get cloned automatically)
-```
+1.  **Create a Gatsby site.**
 
-Check results
+    Use the Gatsby CLI to create a new site, specifying the minimal starter.
 
-```Bash
-hugo server
-```
+    ```shell
+    # create a new Gatsby site using the minimal starter
+    npm init gatsby
+    ```
 
-Commit & push, than:
+2.  **Start developing.**
 
-```Bash
-bash deploy.sh
-``` 
+    Navigate into your new site’s directory and start it up.
 
-## Custom theme goals
+    ```shell
+    cd my-gatsby-site/
+    npm run develop
+    ```
 
-- Font: [Recursive Design](https://www.recursive.design/)
-- Markdown style html: `#` and `*`
-- Auto light/dark theme, switcher button
-- Theme: [Hyperlink Minimal](https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=CFD8DC&secondary.color=3e1cff&primary.text.color=546E7A)
-- TL;DR posts list
-- Hugo Base-Theme: [Accesable Minimalism](https://themes.gohugo.io/accessible-minimalism-hugo-theme/)
-- [UBlogger Code Blocks](https://ublogger.netlify.app/theme-documentation-built-in-shortcodes/)
+3.  **Open the code and start customizing!**
+
+    Your site is now running at http://localhost:8000!
+
+    Edit `src/pages/index.js` to see your site update in real-time!
+
+4.  **Learn more**
+
+    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+
+    - [Tutorials](https://www.gatsbyjs.com/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+
+    - [Guides](https://www.gatsbyjs.com/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+
+    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+
+    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+
+    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+
+## 🚀 Quick start (Gatsby Cloud)
+
+Deploy this starter with one click on [Gatsby Cloud](https://www.gatsbyjs.com/cloud/):
+
+[<img src="https://www.gatsbyjs.com/deploynow.svg" alt="Deploy to Gatsby Cloud">](https://www.gatsbyjs.com/dashboard/deploynow?url=https://github.com/gatsbyjs/gatsby-starter-minimal)
