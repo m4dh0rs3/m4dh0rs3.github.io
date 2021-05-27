@@ -1,9 +1,0 @@
-html,
-body {
-  font-family: monospace; %Later add Recursive design
-  %Also add background color and text color
-}
-
-* {
-  box-sizing: border-box;
-}
