@@ -1,6 +1,21 @@
 # The URL the site will be built for
 base_url = "https://m4dh0rs3.github.io"
 
+# The site title and description; used in feeds by default.
+title = "Benedikt Schöps"
+description = "My homepage: Projects, Blog, Resume"
+
+# The default language; used in feeds.
+default_language = "en"
+
+# The additional languages for the site.
+languages = [
+    { code = "de" }
+]
+
+# When set to "true", a feed is automatically generated.
+generate_feed = false
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = false
 
@@ -10,6 +25,27 @@ highlight_code = true
 
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
+
+# Configuration of the Markdown rendering
+[markdown]
+# When set to "true", all code blocks are highlighted.
+highlight_code = false
+
+# The theme to use for code highlighting.
+# highlight_theme = "idle"
+
+# When set to "true", emoji aliases translated to their corresponding
+# Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
+render_emoji = true
+
+# Optional translation object. Keys should be language codes.
+# Optional translation object. The key if present should be a language code.
+[translations]
+[translations.de]
+
+title = "Benedikt Schöps"
+description = "My homepage: Projects, Blog, Resume"
+
 
 [extra]
 # Put all your custom variables here
