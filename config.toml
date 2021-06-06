@@ -13,6 +13,10 @@ languages = [
     { code = "de" }
 ]
 
+# When set to "true", the Sass files in the `sass` directory in the site root are compiled.
+# Sass files in theme directories are always compiled.
+compile_sass = true
+
 # Configuration of the Markdown rendering
 [markdown]
 
@@ -33,3 +37,9 @@ render_emoji = true
 [translations.de]
 
 description = "Meine Internetpräsenz: Portfolio, Blog, Projekte"
+
+# You can put any kind of data here. The data
+# will be accessible in all templates
+[extra]
+
+author = "Benedikt Schöps"

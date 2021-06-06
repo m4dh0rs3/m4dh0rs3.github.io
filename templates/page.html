@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% if page.title %}
+{% block title %} {{ page.title }} {% endblock title %}
+{% endif %}
+
+{% if page.description %}
+{% block description %} {{ page.description }} {% endblock description %}
+{% endif %}
+
+{% block main %}
+
+<article class="post">
+  <header>
+    {% if page.title %}
+    <h1>{{ page.title }}</h1>
+    {% endif %}
+  </header>
+
+  <div class="markdown">
+    {% if page.content %}
+    {{ page.content | safe }}
+    {% endif %}
+  </div>
+</article>
+
+{% endblock main %}
