@@ -2,31 +2,31 @@
 <html lang="{{ lang | default(value = 'en') }}">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-	<meta name="author" content="{{ config.extra.author }}">
-	<meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
+  <meta name="author" content="{{ config.extra.author }}">
+  <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
 
-	<link rel="stylesheet" type="text/css" href="{{get_url(path='base.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{get_url(path='base.css')}}">
 
-	<title>
-		{% block title %}
-		{{ config.title }}
-		{% endblock title %}
-	</title>
+  <title>
+    {% block title %}
+    {{ config.title }}
+    {% endblock title %}
+  </title>
 
-	{% block head %}
-	{% endblock %}
+  {% block head %}
+  {% endblock %}
 </head>
 
 <body>
-	{% block body %}
-	{% endblock body %}
+  {% block body %}
+  {% endblock body %}
 
-	<main>
-		{% block main %}
-		{% endblock main %}
-	</main>
+  <main>
+    {% block main %}
+    {% endblock main %}
+  </main>
 </body>

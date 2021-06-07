@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% if section.title %}
+{% block title %} {{ section.title }} {% endblock title %}
+{% endif %}
+
+{% if section.description %}
+{% block description %} {{ section.description }} {% endblock description %}
+{% endif %}
+
+{% block main %}
+
+<div class="section">
+	<header>
+		{% if section.title %}
+		<h1>{{ section.title }}</h1>
+		{% endif %}
+	</header>
+
+	{% if section.content %}
+	<div class="markdown description">
+		{{ section.content | safe }}
+	</div>
+	{% endif %}
+
+	<ul>
+		{% for page in section.pages %}
+		<li><a href="{{ page.permalink | safe }}">{{ page.title | default(value = page.slug) }}</a></li>
+		{% endfor %}
+	</ul>
+</div>
+
+{% endblock main %}
