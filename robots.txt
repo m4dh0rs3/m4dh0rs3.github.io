@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://m4dh0rs3.github.io/sitemap.xml

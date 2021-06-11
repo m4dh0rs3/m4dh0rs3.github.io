@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="author" content="Benedikt Schöps">
+  <meta name="description" content="My Homepage: Portfolio, Blog, Projects">
+
+  <link rel="stylesheet" type="text/css" href="https:&#x2F;&#x2F;m4dh0rs3.github.io&#x2F;base.css">
+
+  <title>
+    
+    Benedikt Schöps
+    
+  </title>
+
+  
+  
+</head>
+
+<body>
+  
+  
+
+  <main>
+    
+
+<article class="post">
+  <header>
+    
+    <h1>Markdown Demonstration</h1>
+    
+  </header>
+
+  <div class="markdown">
+    <p>Testing every <code>elements</code> you can find in <a href="http://commonmark.org">CommonMark</a>.</p>
+<p>Quisque viverra a eros id auctor. Proin id nibh ut nisl dignissim pellentesque et ac mi. Nullam mattis urna quis consequat bibendum. Donec pretium dui elit, a semper purus tristique et. Mauris euismod nisl eu vehicula facilisis. Maecenas facilisis non massa non scelerisque. Integer malesuada cursus erat eu viverra. Duis ligula mi, eleifend vel justo id, laoreet porttitor ex. Etiam ultricies lacus lorem, sed aliquam nulla blandit in. Maecenas vel facilisis neque, vitae fringilla eros. In justo nibh, pellentesque sed faucibus nec, varius sit amet risus.</p>
+<blockquote>
+<p>This is a quote</p>
+</blockquote>
+<ul>
+<li>a</li>
+<li>bullet</li>
+<li>point</li>
+</ul>
+<h3 id="some-code">Some code</h3>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#202020;">fn main() {
+    let greetings = [</span><span style="color:#707070;">&quot;Hello&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;Hola&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;Bonjour&quot;</span><span style="color:#202020;">,
+                     </span><span style="color:#707070;">&quot;Ciao&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;こんにちは&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;안녕하세요&quot;</span><span style="color:#202020;">,
+                     </span><span style="color:#707070;">&quot;Cześć&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;Olá&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;Здравствуйте&quot;</span><span style="color:#202020;">,
+                     </span><span style="color:#707070;">&quot;Chào bạn&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;您好&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;Hallo&quot;</span><span style="color:#202020;">,
+                     </span><span style="color:#707070;">&quot;Hej&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;Ahoj&quot;</span><span style="color:#202020;">, </span><span style="color:#707070;">&quot;سلام&quot;</span><span style="color:#202020;">];
+
+</span><span style="color:#bbbbbb;">// this is a test
+
+    </span><span style="color:#202020;">for (num, greeting) in greetings.iter().enumerate() {
+        print!(</span><span style="color:#707070;">&quot;{} : &quot;</span><span style="color:#202020;">, greeting);
+        match num {
+            </span><span style="color:#707070;">0 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;This code is editable and runnable!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">1 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;¡Este código es editable y ejecutable!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">2 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;Ce code est modifiable et exécutable !&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">3 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;Questo codice è modificabile ed eseguibile!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">4 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;このコードは編集して実行出来ます！&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">5 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;여기에서 코드를 수정하고 실행할 수 있습니다!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">6 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;Ten kod można edytować oraz uruchomić!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">7 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;Este código é editável e executável!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">8 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;Этот код можно отредактировать и запустить!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">9 </span><span style="color:#202020;">=&gt;  println!(</span><span style="color:#707070;">&quot;Bạn có thể edit và run code trực tiếp!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">10 </span><span style="color:#202020;">=&gt; println!(</span><span style="color:#707070;">&quot;这段代码是可以编辑并且能够运行的！&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">11 </span><span style="color:#202020;">=&gt; println!(</span><span style="color:#707070;">&quot;Dieser Code kann bearbeitet und ausgeführt werden!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">12 </span><span style="color:#202020;">=&gt; println!(</span><span style="color:#707070;">&quot;Den här koden kan redigeras och köras!&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">13 </span><span style="color:#202020;">=&gt; println!(</span><span style="color:#707070;">&quot;Tento kód můžete upravit a spustit&quot;</span><span style="color:#202020;">),
+            </span><span style="color:#707070;">14 </span><span style="color:#202020;">=&gt; println!(</span><span style="color:#707070;">&quot;این کد قابلیت ویرایش و اجرا دارد!&quot;</span><span style="color:#202020;">),
+            _ =&gt;  {},
+        }
+    }
+}
+</span></code></pre><h4 id="h3-header">h3 header</h4>
+<h3 id="h4-header-also">h4 header also</h3>
+<p>Some text. </p>
+<h3 id="a-table">A table</h3>
+<table><thead><tr><th>a</th><th>table</th><th>in</th><th>markdown</th><th>!!</th></tr></thead><tbody>
+<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>1</td><td>we</td><td>ew</td><td>we</td><td>with a longish column inside it</td></tr>
+</tbody></table>
+<h4 id="an-image">An image</h4>
+<p><img src="https://placekitten.com/200/300?image=4" alt="a cat" title="A cat photo taken by Energetic
+Spirit (CC BY-SA 2.0)" /></p>
+<h3 id="an-iframe">An iframe</h3>
+<div >
+    <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+</div>
+
+  </div>
+</article>
+
+
+  </main>
+</body>
